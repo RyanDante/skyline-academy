@@ -8,7 +8,8 @@
       "env": {
         "EXPO_PUBLIC_USE_MOCKS": "true",
         "EXPO_PUBLIC_FUNCTIONS_REGION": "europe-west1",
-        "EXPO_PUBLIC_GCE_EXAM_START": "2027-05-10"
+        "EXPO_PUBLIC_GCE_EXAM_START": "2027-05-10",
+        "EXPO_PUBLIC_SKYLINE_WHATSAPP": "237651371800"
       }
     },
     "development": {

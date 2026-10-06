@@ -5,7 +5,8 @@
 export const config = {
   useMocks: process.env.EXPO_PUBLIC_USE_MOCKS === 'true',
   functionsRegion: process.env.EXPO_PUBLIC_FUNCTIONS_REGION ?? 'europe-west1',
-  skylineWhatsApp: process.env.EXPO_PUBLIC_SKYLINE_WHATSAPP ?? '',
+  /** Skyline admin/tutor WhatsApp, international format without "+". */
+  skylineWhatsApp: process.env.EXPO_PUBLIC_SKYLINE_WHATSAPP || '237651371800',
   gceExamStart: process.env.EXPO_PUBLIC_GCE_EXAM_START ?? '2027-05-10',
 } as const;
 

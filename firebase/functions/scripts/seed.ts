@@ -10,6 +10,7 @@
 import { initializeApp } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 
+import { concoursSectors } from '../../../src/data/concoursSectors';
 import * as seed from '../../../src/data/seed';
 import { keywords } from '../src/keywords';
 
@@ -37,6 +38,7 @@ async function main() {
   await writeAll('questions', seed.questions, (q) => ({ keywords: keywords(q.stem) }));
   await writeAll('solutions', seed.solutions);
   await writeAll('pathwayFamilies', seed.families);
+  await writeAll('concoursSectors', concoursSectors);
   await writeAll('institutions', seed.institutions);
   await writeAll('highlights', seed.highlights);
   await writeAll('groups', seed.groups);

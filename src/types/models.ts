@@ -153,6 +153,38 @@ export interface ConcoursSection {
   topics: ConcoursTopicWeight[];
 }
 
+export type SectorId = 'health' | 'engineering' | 'agriculture' | 'administration' | 'teaching';
+
+/** A field of study (or, for Engineering, a school) inside a Concours sector. */
+export interface ConcoursField {
+  id: string;
+  name: string;
+  summary: string;
+  requirements: string[];
+  schools: string[];
+  /** Usual exam period, e.g. "September" or "Jul–Sep". Null when not yet known. */
+  examWindow: string | null;
+  /** Drafted by the app team; Skyline must verify before it is treated as official. */
+  toConfirm?: boolean;
+  /** Institutions with a readiness view (see `Institution`). */
+  institutionIds?: string[];
+}
+
+export interface ConcoursSector {
+  id: SectorId;
+  name: string;
+  order: number;
+  /** Ionicons glyph name. */
+  icon: string;
+  /** Short write-up shown on the sector card. */
+  blurb: string;
+  /** Opening line at the top of the sector page. */
+  headline: string;
+  /** Engineering lists schools rather than fields. */
+  listLabel: 'Fields' | 'Schools';
+  fields: ConcoursField[];
+}
+
 export interface PathwayFamily {
   id: PathwayFamilyId;
   name: string;

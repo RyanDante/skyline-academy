@@ -22,6 +22,7 @@ export const COLLECTIONS = {
   questions: 'questions',
   solutions: 'solutions',
   families: 'pathwayFamilies',
+  sectors: 'concoursSectors',
   institutions: 'institutions',
   highlights: 'highlights',
   users: 'users',

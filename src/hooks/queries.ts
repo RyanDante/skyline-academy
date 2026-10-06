@@ -5,7 +5,7 @@ import { contentService } from '@/services/content';
 import { downloadsService } from '@/services/downloads';
 import { groupsService } from '@/services/groups';
 import { attemptsService } from '@/services/attempts';
-import type { Level, PathwayFamilyId } from '@/types/models';
+import type { Level, PathwayFamilyId, SectorId } from '@/types/models';
 
 /** Content changes rarely; keep it fresh for an hour and cached for a day. */
 const CONTENT = { staleTime: 60 * 60 * 1000, gcTime: 24 * 60 * 60 * 1000 };
@@ -77,6 +77,12 @@ export const useSolution = (questionId: string) =>
 
 export const useHighlights = () =>
   useQuery({ queryKey: ['highlights'], queryFn: contentService.highlights, staleTime: 10 * 60 * 1000 });
+
+export const useSectors = () =>
+  useQuery({ queryKey: ['sectors'], queryFn: concoursService.sectors, ...CONTENT });
+
+export const useSector = (id: SectorId) =>
+  useQuery({ queryKey: ['sector', id], queryFn: () => concoursService.sector(id), ...CONTENT });
 
 export const useFamilies = () =>
   useQuery({ queryKey: ['families'], queryFn: concoursService.families, ...CONTENT });

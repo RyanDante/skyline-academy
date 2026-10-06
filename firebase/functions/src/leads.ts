@@ -9,7 +9,7 @@ interface LeadRequest {
   institutionName: string;
   readinessScore: number;
   weakTopics: string[];
-  source: 'readiness' | 'orientation' | 'tutor';
+  source: 'readiness' | 'orientation' | 'tutor' | 'sector';
 }
 
 /**
@@ -20,7 +20,7 @@ export const createLead = onCall({ region: REGION }, async (request): Promise<{ 
   const uid = requireUid(request);
   const d = request.data as Partial<LeadRequest>;
 
-  if (!d || !['readiness', 'orientation', 'tutor'].includes(String(d.source))) {
+  if (!d || !['readiness', 'orientation', 'tutor', 'sector'].includes(String(d.source))) {
     throw new HttpsError('invalid-argument', 'Invalid lead.');
   }
 

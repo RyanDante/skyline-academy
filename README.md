@@ -143,6 +143,8 @@ A failed call refunds the student's question.
 
 **Access and money.** Entitlements live on `users/{uid}.entitlement` and are writable only by Cloud Functions. The available products are Season Pass (until 31 July after the exams), a per-subject pass and an exam-week pass. Access codes (`accessCodes/{CODE}`) serve enrolled Skyline students and partner schools.
 
+**Concours sectors.** The Concours tab opens on 5 sectors from Skyline's *ConcoursInfo* document. Each sector page lists its fields (Engineering lists schools) with requirements, top schools and exam windows, and ends with a WhatsApp link to Skyline. The content lives in `src/data/concoursSectors.ts` and in the Firestore `concoursSectors` collection. Entries marked `toConfirm` were drafted and show a "To confirm" badge until Skyline verifies them. Fields link to readiness pages through `institutionIds`.
+
 **Leads.** "Talk to Skyline" saves a lead (target, readiness, weak topics) and opens WhatsApp with a pre-filled message.
 
 ## 5. Design system

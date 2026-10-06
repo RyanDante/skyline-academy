@@ -8,7 +8,7 @@ export interface LeadRequest {
   institutionName: string;
   readinessScore: number;
   weakTopics: string[];
-  source: 'readiness' | 'orientation' | 'tutor';
+  source: 'readiness' | 'orientation' | 'tutor' | 'sector';
 }
 
 const createLead = callable<LeadRequest, { leadId: string }>('createLead');
@@ -32,6 +32,23 @@ export const leadsService = {
             lead.readinessScore * 100,
           )}%).${weak} I'd like to know about your prep classes.`;
     await Linking.openURL(whatsappUrl(text));
+  },
+
+  /** WhatsApp chat with a Skyline admin or tutor about a Concours sector, or one field in it. */
+  async askAboutSector(studentName: string, sectorName: string, fieldName?: string): Promise<void> {
+    if (!config.useMocks) {
+      await createLead({
+        institutionId: '',
+        institutionName: fieldName ? `${fieldName} (${sectorName})` : sectorName,
+        readinessScore: 0,
+        weakTopics: [],
+        source: 'sector',
+      }).catch(() => undefined);
+    }
+    const topic = fieldName ? `${fieldName} (${sectorName})` : `the ${sectorName} sector`;
+    await Linking.openURL(
+      whatsappUrl(`Hello Skyline, I'm ${studentName}. I'd like information about the Concours for ${topic}.`),
+    );
   },
 
   async askTeacher(studentName: string, question: string): Promise<void> {

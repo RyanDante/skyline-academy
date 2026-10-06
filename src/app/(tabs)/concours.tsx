@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 
 import { ReadinessCard } from '@/components/concours/ReadinessCard';
+import { SectorCard } from '@/components/concours/SectorCard';
 import {
   Button,
   Card,
@@ -14,7 +15,7 @@ import {
   SkeletonList,
   Text,
 } from '@/components/ui';
-import { useFamilies, useInstitutions } from '@/hooks/queries';
+import { useFamilies, useInstitutions, useSectors } from '@/hooks/queries';
 import { useReadiness } from '@/hooks/useReadiness';
 import { leadsService } from '@/services/leads';
 import { useSessionStore } from '@/stores/sessionStore';
@@ -22,6 +23,7 @@ import { useSessionStore } from '@/stores/sessionStore';
 export default function Concours() {
   const profile = useSessionStore((s) => s.profile);
   const targets = useSessionStore((s) => s.targets);
+  const sectors = useSectors();
   const families = useFamilies();
   const institutions = useInstitutions();
 
@@ -33,10 +35,35 @@ export default function Concours() {
   const isOLevel = profile?.level === 'O';
 
   return (
-    <Screen onRefresh={() => void institutions.refetch()}>
+    <Screen
+      onRefresh={() => {
+        void sectors.refetch();
+        void institutions.refetch();
+      }}
+    >
       <Text variant="title" accessibilityRole="header">
         Concours
       </Text>
+      <Text variant="body" className="-mt-2 text-muted">
+        Explore the sectors, the fields inside them and the top schools to study them.
+      </Text>
+
+      <SectionHeader title="Explore sectors" />
+      {sectors.isLoading ? (
+        <SkeletonList rows={5} />
+      ) : sectors.isError ? (
+        <ErrorState onRetry={() => void sectors.refetch()} />
+      ) : (
+        <View className="gap-3">
+          {(sectors.data ?? []).map((sector) => (
+            <SectorCard
+              key={sector.id}
+              sector={sector}
+              onPress={() => router.push({ pathname: '/concours/sector/[sectorId]', params: { sectorId: sector.id } })}
+            />
+          ))}
+        </View>
+      )}
 
       <Card tone="soft" onPress={() => router.push('/concours/intro')}>
         <Text variant="bodyStrong">New to Concours?</Text>
@@ -77,7 +104,7 @@ export default function Concours() {
             <EmptyState
               icon="flag-outline"
               title="Pick your targets"
-              body="Choose up to 3 Concours below. We'll show how ready you are and remind you before deadlines."
+              body="Open a sector above, then a field's “Check your readiness” link, and add up to 3 schools. We'll show how ready you are and remind you before deadlines."
             />
           ) : (
             targetInstitutions.map((inst) => {
@@ -97,29 +124,12 @@ export default function Concours() {
         </>
       )}
 
-      <SectionHeader title="Explore pathways" />
-      {families.isLoading ? (
-        <SkeletonList rows={3} />
-      ) : (
-        <View>
-          {(families.data ?? []).map((f) => (
-            <ListRow
-              key={f.id}
-              icon={f.id === 'health' ? 'medkit-outline' : f.id === 'engineering' ? 'construct-outline' : 'leaf-outline'}
-              title={f.name}
-              subtitle={f.tagline}
-              onPress={() => router.push({ pathname: '/concours/family/[familyId]', params: { familyId: f.id } })}
-              className="border-b border-line"
-            />
-          ))}
-          <ListRow
-            icon="calendar-outline"
-            title="Concours calendar"
-            subtitle="Exam dates and deadlines, with clash warnings"
-            onPress={() => router.push('/concours/calendar')}
-          />
-        </View>
-      )}
+      <ListRow
+        icon="calendar-outline"
+        title="Concours calendar"
+        subtitle="Exam dates and deadlines, with clash warnings"
+        onPress={() => router.push('/concours/calendar')}
+      />
 
       <Card tone="warning" className="gap-1">
         <Text variant="overline" className="text-accent-deep">
