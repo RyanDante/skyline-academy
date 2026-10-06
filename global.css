@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Values are space-separated RGB channels so Tailwind alpha modifiers work (bg-brand/20). */
+@layer base {
+  :root {
+    --color-bg: 247 251 252;
+    --color-surface: 255 255 255;
+    --color-surface-alt: 236 248 250;
+    --color-ink: 17 17 17;
+    --color-muted: 84 95 98;
+    --color-line: 214 234 238;
+
+    --color-brand: 14 152 154; /* #0E989A */
+    --color-brand-deep: 10 115 117; /* #0A7375, text-safe teal */
+    --color-cyan: 176 229 235; /* #B0E5EB */
+
+    --color-accent: 255 130 10; /* #FF820A */
+    --color-accent-deep: 179 84 0; /* #B35400, text-safe orange */
+    --color-accent-soft: 255 241 227;
+
+    --color-on-accent: 17 17 17;
+    --color-on-brand: 255 255 255;
+    --color-success: 21 128 61;
+    --color-danger: 185 28 28;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg: 9 17 19;
+      --color-surface: 18 29 32;
+      --color-surface-alt: 21 41 45;
+      --color-ink: 237 243 244;
+      --color-muted: 156 172 176;
+      --color-line: 38 58 62;
+
+      --color-brand: 14 152 154;
+      --color-brand-deep: 110 205 208;
+      --color-cyan: 28 72 78;
+
+      --color-accent: 255 130 10;
+      --color-accent-deep: 255 168 92;
+      --color-accent-soft: 58 35 12;
+
+      --color-on-accent: 17 17 17;
+      --color-on-brand: 255 255 255;
+      --color-success: 74 222 128;
+      --color-danger: 248 113 113;
+    }
+  }
+}

@@ -1,0 +1,63 @@
+rules_version = '2';
+
+// Content is public to read and written only by Skyline staff (custom claim `admin`, set with the
+// Admin SDK). Entitlements, leads, usage counters and leaderboards are written by Cloud Functions only.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+
+    // ── Public content ────────────────────────────────────────────────────
+    match /subjects/{id}        { allow read: if true; allow write: if isAdmin(); }
+    match /topics/{id}          { allow read: if true; allow write: if isAdmin(); }
+    match /papers/{id}          { allow read: if true; allow write: if isAdmin(); }
+    match /questions/{id}       { allow read: if true; allow write: if isAdmin(); }
+    match /pathwayFamilies/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /institutions/{id}    { allow read: if true; allow write: if isAdmin(); }
+    match /highlights/{id}      { allow read: if true; allow write: if isAdmin(); }
+
+    // Solutions are readable by everyone; the app hides paid steps for free users.
+    // To enforce the paywall server-side, move paid steps to a subcollection and gate it on
+    // the entitlement (see README "Hardening").
+    match /solutions/{id}       { allow read: if true; allow write: if isAdmin(); }
+
+    // ── Users ─────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      // Students may write their profile but never their entitlement or group memberships.
+      allow create, update: if isSelf(uid)
+        && !request.resource.data.diff(resource == null ? {} : resource.data)
+              .affectedKeys().hasAny(['entitlement', 'groupIds']);
+
+      match /attempts/{attemptId} {
+        allow read: if isSelf(uid) || isAdmin();
+        allow create: if isSelf(uid)
+          && request.resource.data.keys().hasAll(['questionId', 'subjectId', 'topicIds', 'correct', 'createdAt'])
+          && request.resource.data.correct is bool;
+        allow update, delete: if false;
+      }
+
+      match /usage/{day} {
+        allow read: if isSelf(uid);
+        allow write: if false;
+      }
+    }
+
+    // ── Groups ────────────────────────────────────────────────────────────
+    match /groups/{groupId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+
+      match /weeks/{week}/members/{uid} {
+        allow read: if signedIn();
+        allow write: if false;
+      }
+    }
+
+    // ── Server-only ───────────────────────────────────────────────────────
+    match /leads/{id}        { allow read, write: if isAdmin(); }
+    match /accessCodes/{id}  { allow read, write: if isAdmin(); }
+    match /payments/{id}     { allow read, write: if isAdmin(); }
+  }
+}

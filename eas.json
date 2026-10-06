@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "env": {
+        "EXPO_PUBLIC_USE_MOCKS": "true",
+        "EXPO_PUBLIC_FUNCTIONS_REGION": "europe-west1",
+        "EXPO_PUBLIC_GCE_EXAM_START": "2027-05-10",
+        "EXPO_PUBLIC_SKYLINE_WHATSAPP": "",
+        "EAS_PROJECT_ID": ""
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": { "buildType": "apk" }
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "android": { "buildType": "apk" }
+    },
+    "production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_USE_MOCKS": "false"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
