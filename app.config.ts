@@ -9,8 +9,8 @@ import buildFlags from './build-flags';
 const { hasAndroidFirebase, hasIosFirebase, firebaseConfigured, androidGoogleServices, iosGoogleServices } =
   buildFlags;
 
-/** Set after `eas init` (README, "Build with EAS"). */
-const EAS_PROJECT_ID = process.env.EAS_PROJECT_ID;
+/** From `eas init`: https://expo.dev/accounts/ryandantedaemon/projects/skyline-academy */
+const EAS_PROJECT_ID = '3fbbf9ac-0a4f-4c95-bb73-00b9e324acde';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -63,5 +63,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
   },
-  extra: EAS_PROJECT_ID ? { eas: { projectId: EAS_PROJECT_ID } } : {},
+  owner: 'ryandantedaemon',
+  extra: { eas: { projectId: EAS_PROJECT_ID } },
 });

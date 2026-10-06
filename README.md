@@ -46,7 +46,7 @@ eas init
 eas build --platform android --profile preview
 ```
 
-`eas init` creates the project on your Expo account and prints a project ID. Because `app.config.ts` is dynamic, add that ID as `EAS_PROJECT_ID` in the `base.env` block of `eas.json`, and in `.env`.
+The project is already linked to `@ryandantedaemon/skyline-academy`: its ID and owner are in `app.config.ts`. You only need `eas init` if you move the project to another Expo account; because the config is dynamic, paste the new ID into `EAS_PROJECT_ID` and the account name into `owner` in `app.config.ts`. On the first build, EAS asks to generate an Android keystore; answer yes and EAS stores it for you. Values in `eas.json` env blocks can't be empty strings.
 
 When the build finishes, EAS gives a link and QR code for an installable APK to send to testers. iOS builds need an Apple Developer account; run `eas build --platform ios --profile preview` and register testers' devices with `eas device:create`.
 
