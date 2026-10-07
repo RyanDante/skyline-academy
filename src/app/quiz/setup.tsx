@@ -68,7 +68,7 @@ export default function QuizSetup() {
   return (
     <Screen
       topBar={<ScreenHeader title="Set up a quiz" />}
-      footer={<Button label="Start quiz" onPress={start} loading={pool.isLoading} disabled={!subjectId} />}
+      footer={<Button label="Start quiz" variant="go" onPress={start} loading={pool.isLoading} disabled={!subjectId} />}
     >
       <Text variant="label">Subject</Text>
       <View className="flex-row flex-wrap gap-2">

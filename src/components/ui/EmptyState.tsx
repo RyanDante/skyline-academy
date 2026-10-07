@@ -41,7 +41,10 @@ export function ErrorState({ onRetry, message }: { onRetry?: () => void; message
     <EmptyState
       icon="cloud-offline-outline"
       title="Couldn't load this"
-      body={message ?? 'Check your connection and try again. Anything you downloaded still works offline.'}
+      body={
+        message ??
+        'Check your connection and try again. Anything you downloaded still works offline.'
+      }
       actionLabel={onRetry ? 'Try again' : undefined}
       onAction={onRetry}
     />

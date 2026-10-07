@@ -17,7 +17,15 @@ interface ListRowProps {
   destructive?: boolean;
 }
 
-export function ListRow({ title, subtitle, icon, trailing, onPress, className, destructive }: ListRowProps) {
+export function ListRow({
+  title,
+  subtitle,
+  icon,
+  trailing,
+  onPress,
+  className,
+  destructive,
+}: ListRowProps) {
   const colors = useThemeColors();
   return (
     <Pressable
@@ -37,7 +45,8 @@ export function ListRow({ title, subtitle, icon, trailing, onPress, className, d
         </Text>
         {subtitle ? <Text variant="caption">{subtitle}</Text> : null}
       </View>
-      {trailing ?? (onPress ? <Ionicons name="chevron-forward" size={18} color={colors.muted} /> : null)}
+      {trailing ??
+        (onPress ? <Ionicons name="chevron-forward" size={18} color={colors.muted} /> : null)}
     </Pressable>
   );
 }

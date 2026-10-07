@@ -55,7 +55,7 @@ export default function Verify() {
   return (
     <Screen
       topBar={<ScreenHeader title="Verify your number" />}
-      footer={<Button label="Verify" onPress={verify} loading={loading} />}
+      footer={<Button label="Verify" variant="go" onPress={verify} loading={loading} />}
     >
       <Text variant="title">Enter the code</Text>
       <Text variant="body" className="text-muted">

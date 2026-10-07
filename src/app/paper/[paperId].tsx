@@ -83,7 +83,7 @@ export default function PaperScreen() {
 
       {mcqs.length > 0 ? (
         <View className="gap-2">
-          <Button label="Practise with instant marking" icon="flash-outline" onPress={() => practise(false)} />
+          <Button label="Practise with instant marking" variant="go" icon="flash-outline" onPress={() => practise(false)} />
           <Button label="Timed attempt" variant="secondary" icon="timer-outline" onPress={() => practise(true)} />
         </View>
       ) : null}

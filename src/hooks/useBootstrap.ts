@@ -4,7 +4,10 @@ import {
   Inter_500Medium,
   Inter_600SemiBold,
 } from '@expo-google-fonts/inter';
-import { Sora_600SemiBold, Sora_700Bold } from '@expo-google-fonts/sora';
+import {
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+} from '@expo-google-fonts/plus-jakarta-sans';
 import { useFonts } from 'expo-font';
 import { useEffect, useState } from 'react';
 
@@ -23,8 +26,8 @@ export function useBootstrap(): { ready: boolean; error: Error | null } {
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
-    Sora_600SemiBold,
-    Sora_700Bold,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
   });
   const [dbReady, setDbReady] = useState(false);
   const [error, setError] = useState<Error | null>(null);

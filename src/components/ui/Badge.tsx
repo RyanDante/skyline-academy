@@ -14,7 +14,15 @@ const TONES: Record<Tone, { box: string; text: string }> = {
   neutral: { box: 'bg-surface-alt', text: 'text-muted' },
 };
 
-export function Badge({ label, tone = 'brand', className }: { label: string; tone?: Tone; className?: string }) {
+export function Badge({
+  label,
+  tone = 'brand',
+  className,
+}: {
+  label: string;
+  tone?: Tone;
+  className?: string;
+}) {
   return (
     <View className={cn('self-start rounded-full px-2.5 py-1', TONES[tone].box, className)}>
       <Text variant="caption" className={cn('font-body-semibold', TONES[tone].text)}>

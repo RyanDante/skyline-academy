@@ -44,7 +44,7 @@ export default function Phone() {
   return (
     <Screen
       topBar={<ScreenHeader title="Your phone number" modal />}
-      footer={<Button label="Send code" onPress={submit} loading={loading} />}
+      footer={<Button label="Send code" variant="go" onPress={submit} loading={loading} />}
     >
       <Text variant="title">Sign in with your phone</Text>
       <Text variant="body" className="text-muted">

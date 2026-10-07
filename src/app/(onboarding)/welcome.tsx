@@ -38,7 +38,7 @@ export default function Welcome() {
 
       <SkylineSilhouette height={56} />
       <View className="gap-3 bg-bg px-6 pt-5" style={{ paddingBottom: insets.bottom + 16 }}>
-        <Button label="Get started" size="lg" onPress={() => router.push('/(onboarding)/setup')} />
+        <Button label="Get started" variant="go" size="lg" onPress={() => router.push('/(onboarding)/setup')} />
         <Button
           label="I already have an account"
           variant="ghost"

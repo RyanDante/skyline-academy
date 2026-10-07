@@ -2,9 +2,9 @@
  * Skyline design tokens. Colours resolve to CSS variables defined in global.css so
  * every class (bg-surface, text-ink, ...) adapts to light and dark mode automatically.
  *
- * Brand: orange #FF820A, teal #0E989A, light cyan #B0E5EB, white, black.
- * The brand orange and teal are too light for small text on white, so `*-deep`
- * shades carry text and white-on-colour headers.
+ * Brand: orange #FF820A, teal #0E989A / primary teal #0A7375, light cyan #B0E5EB.
+ * `brand-deep` is the primary teal (buttons, links, active tab). Orange is the single
+ * "go" action per screen and always carries dark text. `skyler` is Skyler's indigo.
  */
 const withAlpha = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
 
@@ -24,7 +24,12 @@ module.exports = {
         brand: {
           DEFAULT: withAlpha('brand'),
           deep: withAlpha('brand-deep'),
+          pressed: withAlpha('brand-pressed'),
           soft: withAlpha('cyan'),
+        },
+        skyler: {
+          DEFAULT: withAlpha('skyler'),
+          soft: withAlpha('skyler-soft'),
         },
         accent: {
           DEFAULT: withAlpha('accent'),
@@ -40,13 +45,16 @@ module.exports = {
         body: ['Inter_400Regular'],
         'body-medium': ['Inter_500Medium'],
         'body-semibold': ['Inter_600SemiBold'],
-        display: ['Sora_700Bold'],
-        'display-semibold': ['Sora_600SemiBold'],
+        display: ['PlusJakartaSans_700Bold'],
+        'display-semibold': ['PlusJakartaSans_600SemiBold'],
       },
+      // Brief section 4.2. Never use body text below 14.
       fontSize: {
         caption: ['12px', { lineHeight: '16px' }],
         label: ['13px', { lineHeight: '18px' }],
         body: ['15px', { lineHeight: '22px' }],
+        h3: ['16px', { lineHeight: '22px' }],
+        button: ['16px', { lineHeight: '20px' }],
         lead: ['17px', { lineHeight: '24px' }],
         heading: ['20px', { lineHeight: '26px' }],
         title: ['24px', { lineHeight: '30px' }],
@@ -54,7 +62,7 @@ module.exports = {
       },
       borderRadius: {
         card: '16px',
-        control: '12px',
+        control: '14px',
       },
     },
   },

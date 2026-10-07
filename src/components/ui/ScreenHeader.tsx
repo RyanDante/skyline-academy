@@ -20,7 +20,14 @@ interface ScreenHeaderProps {
 }
 
 /** Lightweight in-screen header for pushed routes (native headers are hidden app-wide). */
-export function ScreenHeader({ title, subtitle, right, onBack, modal, closeIcon }: ScreenHeaderProps) {
+export function ScreenHeader({
+  title,
+  subtitle,
+  right,
+  onBack,
+  modal,
+  closeIcon,
+}: ScreenHeaderProps) {
   const showClose = modal || closeIcon;
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();

@@ -41,9 +41,14 @@ export default function InstitutionScreen() {
   const requireAccount = useRequireAccount();
 
   const inst = institution.data;
-  const readiness = useMemo(() => (inst ? computeReadiness(inst, attempts ?? []) : null), [inst, attempts]);
+  const readiness = useMemo(
+    () => (inst ? computeReadiness(inst, attempts ?? []) : null),
+    [inst, attempts],
+  );
   const focus = readiness ? nextFocusTopic(readiness) : null;
-  const focusSubjectId = inst?.sections.find((s) => s.topics.some((t) => t.topicId === focus?.topicId))?.subjectId;
+  const focusSubjectId = inst?.sections.find((s) =>
+    s.topics.some((t) => t.topicId === focus?.topicId),
+  )?.subjectId;
   const tracked = targets.includes(institutionId);
 
   if (institution.isLoading) {
@@ -56,7 +61,11 @@ export default function InstitutionScreen() {
   if (!inst || !readiness) {
     return (
       <Screen topBar={<ScreenHeader title="Concours" />}>
-        <EmptyState icon="school-outline" title="Not found" body="This institution may have been removed." />
+        <EmptyState
+          icon="school-outline"
+          title="Not found"
+          body="This institution may have been removed."
+        />
       </Screen>
     );
   }
@@ -90,7 +99,9 @@ export default function InstitutionScreen() {
             {inst.name}
           </Text>
           <Text variant="caption" className="text-brand-soft">
-            {examDays !== null && examDays >= 0 ? `Exam in ${pluralize(examDays, 'day')}` : 'Exam date not confirmed'}
+            {examDays !== null && examDays >= 0
+              ? `Exam in ${pluralize(examDays, 'day')}`
+              : 'Exam date not confirmed'}
           </Text>
           <View className="mt-3 flex-row items-baseline gap-2">
             <Text variant="hero" className="text-white">
@@ -100,10 +111,15 @@ export default function InstitutionScreen() {
               academic readiness
             </Text>
           </View>
-          <ProgressBar value={readiness.score} track="onDark" accessibilityLabel="Academic readiness" />
+          <ProgressBar
+            value={readiness.score}
+            track="onDark"
+            accessibilityLabel="Academic readiness"
+          />
           <Text variant="caption" className="mt-1 text-brand-soft">
             Based on {pluralize(readiness.questionsAnswered, 'question')} · weights from{' '}
-            {pluralize(inst.papersAnalysed, 'paper')}. This shows preparation, not your chance of admission.
+            {pluralize(inst.papersAnalysed, 'paper')}. This shows preparation, not your chance of
+            admission.
           </Text>
         </View>
       }
@@ -112,12 +128,21 @@ export default function InstitutionScreen() {
           {focus && focusSubjectId ? (
             <Button
               label={`Practise ${focus.name}`}
+              variant="go"
               onPress={() =>
-                router.push({ pathname: '/quiz/setup', params: { subjectId: focusSubjectId, topicId: focus.topicId } })
+                router.push({
+                  pathname: '/quiz/setup',
+                  params: { subjectId: focusSubjectId, topicId: focus.topicId },
+                })
               }
             />
           ) : null}
-          <Button label={`Talk to Skyline about ${inst.shortName} prep`} variant="secondary" icon="logo-whatsapp" onPress={talk} />
+          <Button
+            label={`Talk to Skyline about ${inst.shortName} prep`}
+            variant="secondary"
+            icon="logo-whatsapp"
+            onPress={talk}
+          />
         </View>
       }
     >
@@ -204,7 +229,10 @@ function DateRow({ label, iso }: { label: string; iso: string | null }) {
   return (
     <View className="flex-row items-center justify-between">
       <Text variant="body">{label}</Text>
-      <Text variant="bodyStrong" className={days !== null && days >= 0 && days <= 14 ? 'text-accent-deep' : undefined}>
+      <Text
+        variant="bodyStrong"
+        className={days !== null && days >= 0 && days <= 14 ? 'text-accent-deep' : undefined}
+      >
         {iso ? formatDate(iso) : 'To be announced'}
       </Text>
     </View>

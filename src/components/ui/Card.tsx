@@ -3,7 +3,7 @@ import { Pressable, View, type ViewProps } from 'react-native';
 
 import { cn } from '@/lib/cn';
 
-type Tone = 'default' | 'alt' | 'highlight' | 'soft' | 'warning';
+type Tone = 'default' | 'alt' | 'highlight' | 'soft' | 'warning' | 'skyler';
 
 const TONES: Record<Tone, string> = {
   default: 'bg-surface border border-line',
@@ -11,6 +11,7 @@ const TONES: Record<Tone, string> = {
   highlight: 'bg-surface border-2 border-accent',
   soft: 'bg-brand-soft',
   warning: 'bg-accent-soft',
+  skyler: 'bg-skyler-soft',
 };
 
 interface CardProps extends ViewProps {

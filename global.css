@@ -2,28 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Values are space-separated RGB channels so Tailwind alpha modifiers work (bg-brand/20). */
+/*
+ * Design system v2 (Skyline design brief, section 4). Values are space-separated RGB channels so
+ * Tailwind alpha modifiers work (bg-brand/20). Brand teal and orange keep their existing values.
+ */
 @layer base {
   :root {
-    --color-bg: 247 251 252;
+    --color-bg: 244 250 251; /* #F4FAFB mint background */
     --color-surface: 255 255 255;
     --color-surface-alt: 236 248 250;
-    --color-ink: 17 17 17;
-    --color-muted: 84 95 98;
-    --color-line: 214 234 238;
+    --color-ink: 20 32 42; /* #14202A */
+    --color-muted: 79 95 104; /* #4F5F68, 4.5:1+ on white */
+    --color-line: 214 234 236; /* #D6EAEC */
 
-    --color-brand: 14 152 154; /* #0E989A */
-    --color-brand-deep: 10 115 117; /* #0A7375, text-safe teal */
-    --color-cyan: 176 229 235; /* #B0E5EB */
+    --color-brand: 14 152 154; /* #0E989A, illustration accents */
+    --color-brand-deep: 10 115 117; /* #0A7375, primary teal: buttons, links, active tab */
+    --color-brand-pressed: 8 79 76; /* #084F4C */
+    --color-cyan: 176 229 235; /* #B0E5EB teal tint */
 
-    --color-accent: 255 130 10; /* #FF820A */
-    --color-accent-deep: 179 84 0; /* #B35400, text-safe orange */
+    --color-accent: 255 130 10; /* #FF820A "go" orange, dark text only */
+    --color-accent-deep: 179 84 0; /* #B35400, orange text on white */
     --color-accent-soft: 255 241 227;
 
-    --color-on-accent: 17 17 17;
+    --color-skyler: 75 73 200; /* #4B49C8 */
+    --color-skyler-soft: 236 236 251; /* #ECECFB */
+
+    --color-on-accent: 20 32 42;
     --color-on-brand: 255 255 255;
-    --color-success: 21 128 61;
-    --color-danger: 185 28 28;
+    --color-success: 46 158 91; /* #2E9E5B */
+    --color-danger: 214 69 69; /* #D64545 */
   }
 
   @media (prefers-color-scheme: dark) {
@@ -32,18 +39,22 @@
       --color-surface: 18 29 32;
       --color-surface-alt: 21 41 45;
       --color-ink: 237 243 244;
-      --color-muted: 156 172 176;
+      --color-muted: 168 182 186;
       --color-line: 38 58 62;
 
       --color-brand: 14 152 154;
       --color-brand-deep: 110 205 208;
+      --color-brand-pressed: 150 220 222;
       --color-cyan: 28 72 78;
 
       --color-accent: 255 130 10;
       --color-accent-deep: 255 168 92;
       --color-accent-soft: 58 35 12;
 
-      --color-on-accent: 17 17 17;
+      --color-skyler: 150 148 240;
+      --color-skyler-soft: 36 35 74;
+
+      --color-on-accent: 20 32 42;
       --color-on-brand: 255 255 255;
       --color-success: 74 222 128;
       --color-danger: 248 113 113;

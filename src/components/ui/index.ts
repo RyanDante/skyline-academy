@@ -2,6 +2,7 @@ export { Badge } from './Badge';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Chip } from './Chip';
+export { DifficultyDots, difficultyWord, type Difficulty } from './DifficultyDots';
 export { EmptyState, ErrorState } from './EmptyState';
 export { ListRow } from './ListRow';
 export { OfflineBanner } from './OfflineBanner';

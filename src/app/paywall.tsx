@@ -102,7 +102,7 @@ export default function Paywall() {
   return (
     <Screen
       topBar={<ScreenHeader title="Upgrade" modal />}
-      footer={<Button label={`Pay ${formatCFA(plan.price)} with Mobile Money`} onPress={pay} loading={paying} />}
+      footer={<Button label={`Pay ${formatCFA(plan.price)} with Mobile Money`} variant="go" onPress={pay} loading={paying} />}
     >
       <Text variant="title">Study with everything unlocked</Text>
 
