@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, RefreshControl, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { cn } from '@/lib/cn';
@@ -42,33 +42,44 @@ export function Screen({
     <View className="flex-1 bg-bg" style={{ paddingTop: topPad }}>
       {topBar}
       <OfflineBanner />
-      {scroll ? (
-        <ScrollView
-          className="flex-1"
-          keyboardShouldPersistTaps="handled"
-          refreshControl={
-            onRefresh ? (
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.brand} />
-            ) : undefined
-          }
-        >
-          {hero}
-          {body}
-        </ScrollView>
-      ) : (
-        <View className="flex-1">
-          {hero}
-          {body}
-        </View>
-      )}
-      {footer ? (
-        <View
-          className="border-t border-line bg-surface px-4 pt-3"
-          style={{ paddingBottom: Math.max(insets.bottom, 12) }}
-        >
-          {footer}
-        </View>
-      ) : null}
+      {/*
+        Apps are edge-to-edge (Expo SDK 57), so Android no longer resizes the window for the
+        keyboard. Padding on both platforms lifts the inputs and the pinned footer above it.
+      */}
+      <KeyboardAvoidingView className="flex-1" behavior="padding">
+        {scroll ? (
+          <ScrollView
+            className="flex-1"
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            refreshControl={
+              onRefresh ? (
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor={colors.brand}
+                />
+              ) : undefined
+            }
+          >
+            {hero}
+            {body}
+          </ScrollView>
+        ) : (
+          <View className="flex-1">
+            {hero}
+            {body}
+          </View>
+        )}
+        {footer ? (
+          <View
+            className="border-t border-line bg-surface px-4 pt-3"
+            style={{ paddingBottom: Math.max(insets.bottom, 12) }}
+          >
+            {footer}
+          </View>
+        ) : null}
+      </KeyboardAvoidingView>
     </View>
   );
 }

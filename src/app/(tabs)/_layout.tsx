@@ -21,6 +21,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        // Frees the space above the keyboard on the Tutor tab's message box.
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: colors.brandDeep,
         tabBarInactiveTintColor: colors.muted,
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.line },

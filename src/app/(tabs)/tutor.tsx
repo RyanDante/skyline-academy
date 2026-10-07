@@ -3,15 +3,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, Pressable, ScrollView, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { renderInlineMath } from '@/components/study/latex';
@@ -58,7 +50,12 @@ export default function Tutor() {
   }
 
   const pickImage = () => {
-    const options = { mediaTypes: ['images'] as ImagePicker.MediaType[], allowsEditing: true, quality: 0.5, base64: true };
+    const options = {
+      mediaTypes: ['images'] as ImagePicker.MediaType[],
+      allowsEditing: true,
+      quality: 0.5,
+      base64: true,
+    };
     const handle = (result: ImagePicker.ImagePickerResult) => {
       const asset = result.canceled ? null : result.assets[0];
       if (asset?.base64) setImage({ uri: asset.uri, base64: asset.base64 });
@@ -71,7 +68,10 @@ export default function Tutor() {
           if (perm.granted) handle(await ImagePicker.launchCameraAsync(options));
         },
       },
-      { text: 'Choose from gallery', onPress: async () => handle(await ImagePicker.launchImageLibraryAsync(options)) },
+      {
+        text: 'Choose from gallery',
+        onPress: async () => handle(await ImagePicker.launchImageLibraryAsync(options)),
+      },
       { text: 'Cancel', style: 'cancel' },
     ]);
   };
@@ -90,7 +90,12 @@ export default function Tutor() {
       .slice(-HISTORY_TURNS)
       .map((m) => ({ role: m.role, text: m.text }));
 
-    const userMsg: TutorMessage = { id: createId(), role: 'user', text: message || 'Help me with this question.', imageUri: image?.uri };
+    const userMsg: TutorMessage = {
+      id: createId(),
+      role: 'user',
+      text: message || 'Help me with this question.',
+      imageUri: image?.uri,
+    };
     const replyId = createId();
     add(userMsg);
     add({ id: replyId, role: 'assistant', text: '', pending: true });
@@ -140,7 +145,8 @@ export default function Tutor() {
   return (
     <KeyboardAvoidingView
       className="flex-1 bg-bg"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      // Padding on Android too: edge-to-edge apps don't get the window resized for the keyboard.
+      behavior="padding"
       style={{ paddingTop: insets.top }}
     >
       <OfflineBanner />
@@ -149,13 +155,15 @@ export default function Tutor() {
           <Text variant="title" accessibilityRole="header">
             Skyline Tutor
           </Text>
-          {Number.isFinite(left) ? (
-            <Text variant="caption">{left} free left today</Text>
-          ) : null}
+          {Number.isFinite(left) ? <Text variant="caption">{left} free left today</Text> : null}
         </View>
         <View className="flex-row gap-2">
           <Chip label="Explain" selected={mode === 'explain'} onPress={() => setMode('explain')} />
-          <Chip label="Solve with me" selected={mode === 'solve-with-me'} onPress={() => setMode('solve-with-me')} />
+          <Chip
+            label="Solve with me"
+            selected={mode === 'solve-with-me'}
+            onPress={() => setMode('solve-with-me')}
+          />
         </View>
       </View>
 
@@ -170,8 +178,8 @@ export default function Tutor() {
           <View className="gap-4 pt-6">
             <Text variant="heading">What are you working on?</Text>
             <Text variant="body" className="text-muted">
-              Ask about any GCE topic, or snap a photo of a question. The Tutor teaches step by step and shows
-              Skyline’s own solutions when a past question matches.
+              Ask about any GCE topic, or snap a photo of a question. The Tutor teaches step by step
+              and shows Skyline’s own solutions when a past question matches.
             </Text>
             <View className="flex-row flex-wrap gap-2">
               {STARTERS.map((s) => (
@@ -192,7 +200,12 @@ export default function Tutor() {
               key={m.id}
               message={m}
               studentName={profile?.firstName ?? 'a student'}
-              studentQuestion={messages.slice(0, i).reverse().find((x) => x.role === 'user')?.text ?? ''}
+              studentQuestion={
+                messages
+                  .slice(0, i)
+                  .reverse()
+                  .find((x) => x.role === 'user')?.text ?? ''
+              }
             />
           ))
         )}
@@ -200,7 +213,11 @@ export default function Tutor() {
 
       {image ? (
         <View className="flex-row items-center gap-2 px-4 pb-2">
-          <Image source={{ uri: image.uri }} className="h-14 w-14 rounded-control" accessibilityLabel="Attached photo" />
+          <Image
+            source={{ uri: image.uri }}
+            className="h-14 w-14 rounded-control"
+            accessibilityLabel="Attached photo"
+          />
           <Button label="Remove" variant="ghost" size="sm" onPress={() => setImage(null)} />
         </View>
       ) : null}
@@ -231,7 +248,10 @@ export default function Tutor() {
           accessibilityLabel="Send"
           disabled={sending}
           onPress={() => void send()}
-          className={cn('h-12 w-12 items-center justify-center rounded-full bg-accent', sending && 'opacity-50')}
+          className={cn(
+            'h-12 w-12 items-center justify-center rounded-full bg-accent',
+            sending && 'opacity-50',
+          )}
         >
           <Ionicons name="arrow-up" size={22} color="#111111" />
         </Pressable>
@@ -255,13 +275,24 @@ function Bubble({
       <View
         className={cn(
           'rounded-card px-4 py-3',
-          mine ? 'bg-brand-deep' : message.error ? 'bg-accent-soft' : 'border border-line bg-surface',
+          mine
+            ? 'bg-brand-deep'
+            : message.error
+              ? 'bg-accent-soft'
+              : 'border border-line bg-surface',
         )}
       >
         {message.imageUri ? (
-          <Image source={{ uri: message.imageUri }} className="mb-2 h-40 w-56 rounded-control" accessibilityLabel="Your photo" />
+          <Image
+            source={{ uri: message.imageUri }}
+            className="mb-2 h-40 w-56 rounded-control"
+            accessibilityLabel="Your photo"
+          />
         ) : null}
-        <Text variant="body" className={mine ? 'text-on-brand' : message.error ? 'text-accent-deep' : 'text-ink'}>
+        <Text
+          variant="body"
+          className={mine ? 'text-on-brand' : message.error ? 'text-accent-deep' : 'text-ink'}
+        >
           {message.pending ? 'Thinking…' : renderInlineMath(message.text)}
         </Text>
       </View>
@@ -271,7 +302,9 @@ function Bubble({
             <Chip
               key={id}
               label={`Skyline solution ${i + 1}`}
-              onPress={() => router.push({ pathname: '/solution/[questionId]', params: { questionId: id } })}
+              onPress={() =>
+                router.push({ pathname: '/solution/[questionId]', params: { questionId: id } })
+              }
             />
           ))}
         </View>
