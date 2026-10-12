@@ -9,9 +9,9 @@ import buildFlags from './build-flags.js';
 const { hasAndroidFirebase, hasIosFirebase, firebaseConfigured, androidGoogleServices, iosGoogleServices } =
   buildFlags;
 
-if (process.env.EXPO_PUBLIC_USE_MOCKS !== 'true' && !firebaseConfigured) {
+if (process.env.EXPO_PUBLIC_USE_MOCKS === 'false' && !firebaseConfigured) {
   throw new Error(
-    'Live builds require Firebase native config. Add GOOGLE_SERVICES_JSON and GOOGLE_SERVICES_PLIST to the EAS production environment, or use the production-test profile.',
+    'Live builds require Firebase native config. Add GOOGLE_SERVICES_JSON and GOOGLE_SERVICES_PLIST to the EAS production environment, or enable demo mode with EXPO_PUBLIC_USE_MOCKS=true.',
   );
 }
 

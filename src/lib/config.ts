@@ -3,7 +3,7 @@
  * Only non-secret values belong here: anything EXPO_PUBLIC_ is bundled into the app.
  */
 export const config = {
-  useMocks: process.env.EXPO_PUBLIC_USE_MOCKS === 'true',
+  useMocks: process.env.EXPO_PUBLIC_USE_MOCKS !== 'false',
   functionsRegion: process.env.EXPO_PUBLIC_FUNCTIONS_REGION ?? 'europe-west1',
   /** Skyline admin/tutor WhatsApp, international format without "+". */
   skylineWhatsApp: process.env.EXPO_PUBLIC_SKYLINE_WHATSAPP || '237651371800',

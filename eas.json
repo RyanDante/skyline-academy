@@ -23,7 +23,7 @@
       "distribution": "internal",
       "android": { "buildType": "apk" }
     },
-    "production-test": {
+    "production": {
       "extends": "base",
       "distribution": "internal",
       "autoIncrement": true,
@@ -32,8 +32,10 @@
         "EXPO_PUBLIC_USE_MOCKS": "true"
       }
     },
-    "production": {
+    "production-live": {
       "extends": "base",
+      "distribution": "internal",
+      "environment": "production",
       "autoIncrement": true,
       "android": { "buildType": "apk" },
       "env": {
