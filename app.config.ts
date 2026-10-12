@@ -1,6 +1,6 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
-import buildFlags from './build-flags';
+import buildFlags from './build-flags.js';
 
 /**
  * Firebase native config files are not committed. Download them from the Firebase console
