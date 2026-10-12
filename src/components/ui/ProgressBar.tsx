@@ -5,7 +5,7 @@ import { cn } from '@/lib/cn';
 interface ProgressBarProps {
   /** 0..1 */
   value: number;
-  tone?: 'accent' | 'brand';
+  tone?: 'accent' | 'brand' | 'skyler';
   /** Track colour; use "onDark" inside the teal hero. */
   track?: 'default' | 'onDark';
   className?: string;
@@ -32,7 +32,10 @@ export function ProgressBar({
       )}
     >
       <View
-        className={cn('h-full rounded-full', tone === 'accent' ? 'bg-accent' : 'bg-brand-deep')}
+        className={cn(
+          'h-full rounded-full',
+          tone === 'accent' ? 'bg-accent' : tone === 'skyler' ? 'bg-skyler' : 'bg-brand-deep',
+        )}
         style={{ width: `${pct}%` }}
       />
     </View>

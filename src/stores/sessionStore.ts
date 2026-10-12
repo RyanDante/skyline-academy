@@ -6,6 +6,14 @@ import { product } from '@/lib/config';
 import { todayKey } from '@/lib/dates';
 import type { Entitlement, UserProfile } from '@/types/models';
 
+/** A weak topic saved from a GCE Tutor session summary. */
+export interface RevisionItem {
+  subjectId: string;
+  topicId: string;
+  name: string;
+  addedAt: number;
+}
+
 export interface LastPaper {
   paperId: string;
   title: string;
@@ -27,6 +35,7 @@ interface SessionState {
   lastPaper: LastPaper | null;
   tutorUsage: { day: string; count: number };
   joinedGroupIds: string[];
+  revisionPlan: RevisionItem[];
 
   setHydrated: () => void;
   saveProfile: (profile: UserProfile) => void;
@@ -40,6 +49,8 @@ interface SessionState {
   recordTutorQuestion: () => void;
   tutorQuestionsLeftToday: () => number;
   joinGroup: (groupId: string) => void;
+  addToRevisionPlan: (items: Omit<RevisionItem, 'addedAt'>[]) => void;
+  removeFromRevisionPlan: (topicId: string) => void;
 }
 
 const FREE: Entitlement = { plan: 'free', expiresAt: null, subjectPasses: [] };
@@ -58,6 +69,7 @@ export const useSessionStore = create<SessionState>()(
       lastPaper: null,
       tutorUsage: { day: todayKey(), count: 0 },
       joinedGroupIds: [],
+      revisionPlan: [],
 
       setHydrated: () => set({ hydrated: true }),
       saveProfile: (profile) => set({ profile }),
@@ -114,6 +126,18 @@ export const useSessionStore = create<SessionState>()(
             ? s.joinedGroupIds
             : [...s.joinedGroupIds, groupId],
         })),
+
+      addToRevisionPlan: (items) =>
+        set((s) => {
+          const known = new Set(s.revisionPlan.map((r) => r.topicId));
+          const fresh = items
+            .filter((i) => !known.has(i.topicId))
+            .map((i) => ({ ...i, addedAt: Date.now() }));
+          return { revisionPlan: [...s.revisionPlan, ...fresh] };
+        }),
+
+      removeFromRevisionPlan: (topicId) =>
+        set((s) => ({ revisionPlan: s.revisionPlan.filter((r) => r.topicId !== topicId) })),
     }),
     {
       name: 'skyline-session',

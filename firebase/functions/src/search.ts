@@ -9,7 +9,42 @@ export interface GroundingItem {
 
 interface QuestionDoc {
   stem: string;
+  paperId: string;
+  label: string;
+  marks: number;
+  options?: { key: string; text: string }[];
   keywords?: string[];
+}
+
+export interface QuestionContext {
+  stem: string;
+  marks: number;
+  /** e.g. "GCE 2024 Paper 1 Q3". */
+  source: string;
+  optionsText: string | null;
+  solutionText: string | null;
+}
+
+/** The question in focus and its Skyline solution, loaded from the bank by id. */
+export async function loadQuestionContext(questionId: string): Promise<QuestionContext | null> {
+  const snap = await db.collection('questions').doc(questionId).get();
+  if (!snap.exists) return null;
+  const q = snap.data() as QuestionDoc;
+
+  const [paperSnap, solSnap] = await Promise.all([
+    db.collection('papers').doc(q.paperId).get(),
+    db.collection('solutions').where('questionId', '==', questionId).limit(1).get(),
+  ]);
+  const paper = paperSnap.data() as { year?: number; paperNumber?: number } | undefined;
+  const solution = solSnap.docs[0];
+
+  return {
+    stem: q.stem,
+    marks: q.marks,
+    source: paper ? `GCE ${paper.year} Paper ${paper.paperNumber} Q${q.label}` : `Q${q.label}`,
+    optionsText: q.options?.length ? q.options.map((o) => `${o.key}. ${o.text}`).join('\n') : null,
+    solutionText: solution ? solutionToText(solution.data() as SolutionDoc) : null,
+  };
 }
 
 interface SolutionDoc {

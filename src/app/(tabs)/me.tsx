@@ -6,13 +6,15 @@ import { Alert, View } from 'react-native';
 
 import { Button, Card, ListRow, ProgressBar, Screen, SectionHeader, Text } from '@/components/ui';
 import { accuracy } from '@/domain/mastery';
-import { useAttempts, useSubjects } from '@/hooks/queries';
+import { computeResult } from '@/domain/skyler';
+import { useAttempts, useSectors, useSubjects } from '@/hooks/queries';
 import { cacheRepo } from '@/db/cacheRepo';
 import { formatDate } from '@/lib/dates';
 import { pluralize } from '@/lib/format';
 import { authService } from '@/services/auth';
 import { leadsService } from '@/services/leads';
 import { hasFullAccess, useSessionStore } from '@/stores/sessionStore';
+import { useSkylerStore } from '@/stores/skylerStore';
 
 export default function Me() {
   const profile = useSessionStore((s) => s.profile);
@@ -20,8 +22,20 @@ export default function Me() {
   const phone = useSessionStore((s) => s.phone);
   const entitlement = useSessionStore((s) => s.entitlement);
   const signOutLocal = useSessionStore((s) => s.signOut);
+  const revisionPlan = useSessionStore((s) => s.revisionPlan);
+  const removeFromRevisionPlan = useSessionStore((s) => s.removeFromRevisionPlan);
+  const skylerAnswers = useSkylerStore((s) => s.result?.answers);
+  const sectors = useSectors();
   const { data: attempts } = useAttempts();
   const subjects = useSubjects(profile?.level ?? 'A');
+
+  // Last Skyler result, recomputed from the saved answers and current sector names.
+  const skylerMatch = useMemo(() => {
+    if (!skylerAnswers) return null;
+    const { matches } = computeResult(skylerAnswers);
+    const names = new Map((sectors.data ?? []).map((s) => [s.id, s.name]));
+    return matches.map((id) => names.get(id) ?? id).join(' or ');
+  }, [skylerAnswers, sectors.data]);
 
   const progress = useMemo(
     () =>
@@ -91,6 +105,47 @@ export default function Me() {
           </View>
         ))
       )}
+
+      <SectionHeader title="My Concours match" />
+      <ListRow
+        icon="sparkles-outline"
+        title={skylerMatch ? `Skyler suggests: ${skylerMatch}` : 'Find your Concours with Skyler'}
+        subtitle={skylerMatch ? 'Tap to see your result' : '10 quick questions · about 3 minutes'}
+        onPress={() => router.push(skylerMatch ? '/skyler/result' : '/skyler/intro')}
+      />
+
+      {revisionPlan.length > 0 ? (
+        <>
+          <SectionHeader title="My revision plan" />
+          {revisionPlan.map((item) => (
+            <ListRow
+              key={item.topicId}
+              icon="bookmark-outline"
+              title={item.name}
+              subtitle="Practise with the GCE Tutor"
+              onPress={() =>
+                router.push({
+                  pathname: '/tutor/gce/setup',
+                  params: {
+                    level: profile?.level ?? 'A',
+                    subjectId: item.subjectId,
+                    topicIds: item.topicId,
+                  },
+                })
+              }
+              trailing={
+                <Button
+                  label="Done"
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => removeFromRevisionPlan(item.topicId)}
+                />
+              }
+              className="border-b border-line"
+            />
+          ))}
+        </>
+      ) : null}
 
       <SectionHeader title="Study" />
       <View>

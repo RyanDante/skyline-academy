@@ -154,6 +154,8 @@ export interface ConcoursSection {
 }
 
 export type SectorId = 'health' | 'engineering' | 'agriculture' | 'administration' | 'teaching';
+export type ConcoursDifficulty = 1 | 2 | 3 | 4 | 5;
+export type EntryLevel = 'after-o-level' | 'after-a-level' | 'after-degree';
 
 /** A field of study (or, for Engineering, a school) inside a Concours sector. */
 export interface ConcoursField {
@@ -164,6 +166,20 @@ export interface ConcoursField {
   schools: string[];
   /** Usual exam period, e.g. "September" or "Jul–Sep". Null when not yet known. */
   examWindow: string | null;
+  /** Earliest stage a student can apply from. */
+  entryLevel: EntryLevel;
+  /** GCE subject names a student must have (used by Skyler's eligibility check). */
+  requiredSubjects: string[];
+  /** Helpful but not required. */
+  recommendedSubjects: string[];
+  /** Academy judgement, reviewed yearly. 5 = very competitive. */
+  difficulty: ConcoursDifficulty;
+  /** e.g. "7 years". */
+  duration?: string;
+  careers: string[];
+  sourceUrl?: string;
+  /** ISO date Skyline last checked the official notice, or null if never. */
+  lastVerified: string | null;
   /** Drafted by the app team; Skyline must verify before it is treated as official. */
   toConfirm?: boolean;
   /** Institutions with a readiness view (see `Institution`). */
@@ -182,6 +198,8 @@ export interface ConcoursSector {
   headline: string;
   /** Engineering lists schools rather than fields. */
   listLabel: 'Fields' | 'Schools';
+  /** Overall competitiveness shown on the sector card (academy judgement). */
+  difficulty: ConcoursDifficulty;
   fields: ConcoursField[];
 }
 

@@ -71,10 +71,11 @@ export default function Home() {
     <Screen
       hero={
         <CountdownHero
-          firstName={profile?.firstName ?? 'there'}
+          firstName={profile?.firstName || undefined}
           subtitle={profile ? `${profile.form} · ${profile.level} Level` : 'GCE'}
           season={season}
-          sampleData={config.useMocks}
+          // Demo only: hidden in release builds, including EAS tester builds.
+          sampleData={__DEV__ && config.useMocks}
         />
       }
       onRefresh={() => void highlights.refetch()}
@@ -182,7 +183,7 @@ type IconName = ComponentProps<typeof Ionicons>['name'];
 const ACTIONS: { label: string; icon: IconName; href: Href }[] = [
   { label: 'Past papers', icon: 'document-text-outline', href: '/(tabs)/gce' },
   { label: 'Quick quiz', icon: 'flash-outline', href: '/quiz/setup' },
-  { label: 'Ask Tutor', icon: 'chatbubbles-outline', href: '/(tabs)/tutor' },
+  { label: 'Ask GCE Tutor', icon: 'chatbubbles-outline', href: '/tutor/gce/setup' },
   { label: 'Calendar', icon: 'calendar-outline', href: '/concours/calendar' },
 ];
 
@@ -196,10 +197,11 @@ function QuickActions() {
           accessibilityRole="button"
           accessibilityLabel={a.label}
           onPress={() => router.push(a.href)}
-          className="flex-1 items-center gap-1.5 rounded-card border border-line bg-surface py-3 active:bg-surface-alt"
+          // Brief: 76 dp minimum height, 8 dp padding, 12 sp labels that may wrap to two lines.
+          className="min-h-[76px] flex-1 items-center justify-center gap-1.5 rounded-card border border-line bg-surface p-2 active:bg-surface-alt"
         >
-          <Ionicons name={a.icon} size={22} color={colors.brandDeep} />
-          <Text variant="caption" className="text-center text-ink" numberOfLines={1}>
+          <Ionicons name={a.icon} size={24} color={colors.brandDeep} />
+          <Text variant="caption" className="text-center text-ink" numberOfLines={2}>
             {a.label}
           </Text>
         </Pressable>

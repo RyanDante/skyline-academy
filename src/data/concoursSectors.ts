@@ -4,12 +4,24 @@
  * Entries with `toConfirm: true` were drafted by the app team where the document said
  * "Do write up for this one" or gave no details. Skyline should verify them; once checked,
  * remove the flag. Edit text here (mock mode / seed) or in the Firestore `concoursSectors` collection.
+ *
+ * Entry level, required/recommended subjects, difficulty, duration and careers (FIELD_META below)
+ * were added for Skyler (design brief, section 8). They are drafts for Skyline to review yearly.
  */
-import type { ConcoursSector } from '@/types/models';
+import type { ConcoursDifficulty, ConcoursField, ConcoursSector, SectorId } from '@/types/models';
 
-const BIO_CHEM_A_LEVEL = 'GCE A Level: pass in at least 2 subjects, including Biology and Chemistry';
+type FieldMeta = Pick<
+  ConcoursField,
+  'entryLevel' | 'requiredSubjects' | 'recommendedSubjects' | 'difficulty' | 'careers' | 'duration'
+>;
+type DraftField = Omit<ConcoursField, keyof FieldMeta | 'lastVerified'>;
+type DraftSector = Omit<ConcoursSector, 'fields' | 'difficulty'> & { fields: DraftField[] };
+
+const BIO_CHEM_A_LEVEL =
+  'GCE A Level: pass in at least 2 subjects, including Biology and Chemistry';
 const BAC_C_D = 'OR Baccalauréat of General Secondary Education, series C or D';
-const O_LEVEL_5_MATHS_ENG = 'GCE O Level: pass in at least 5 subjects, including Mathematics and English';
+const O_LEVEL_5_MATHS_ENG =
+  'GCE O Level: pass in at least 5 subjects, including Mathematics and English';
 const BAC_PROB_C_D = 'OR Baccalauréat and Probatoire of General Secondary Education, series C or D';
 const SRN_ROUTE =
   'OR State Registered Nurse (SRN) certificate with GCE O Level in 5 subjects in one sitting, including English Language and Mathematics';
@@ -21,14 +33,15 @@ const ENGINEERING_REQUIREMENTS = [
   'Check the official notice for the exact subjects each programme accepts',
 ];
 
-export const concoursSectors: ConcoursSector[] = [
+const draftSectors: DraftSector[] = [
   // ─── Health ────────────────────────────────────────────────────────────────
   {
     id: 'health',
     name: 'Health',
     order: 1,
     icon: 'medkit-outline',
-    blurb: 'Medicine, nursing, midwifery, lab sciences and more. Some of the most competitive Concours in Cameroon.',
+    blurb:
+      'Medicine, nursing, midwifery, lab sciences and more. Some of the most competitive Concours in Cameroon.',
     headline: 'Future doctors, nurses and lab scientists start here. Skyline Academy gets you in.',
     listLabel: 'Fields',
     fields: [
@@ -124,8 +137,10 @@ export const concoursSectors: ConcoursSector[] = [
     name: 'Engineering',
     order: 2,
     icon: 'construct-outline',
-    blurb: 'Top engineering faculties and polytechnics: FET, COT, NAHPI, Polytech, IUT and Public Works.',
-    headline: "Tomorrow's engineers are trained in these schools. Skyline Academy prepares you to win your seat.",
+    blurb:
+      'Top engineering faculties and polytechnics: FET, COT, NAHPI, Polytech, IUT and Public Works.',
+    headline:
+      "Tomorrow's engineers are trained in these schools. Skyline Academy prepares you to win your seat.",
     listLabel: 'Schools',
     fields: [
       {
@@ -165,7 +180,7 @@ export const concoursSectors: ConcoursSector[] = [
         id: 'polytech',
         name: 'Polytech, Yaoundé and Douala',
         summary:
-          "The national advanced schools of engineering, among the most selective engineering Concours in Cameroon. Teaching is mainly in French, so strong French helps.",
+          'The national advanced schools of engineering, among the most selective engineering Concours in Cameroon. Teaching is mainly in French, so strong French helps.',
         requirements: ENGINEERING_REQUIREMENTS,
         schools: ['Polytech Yaoundé', 'Polytech Douala'],
         examWindow: null,
@@ -201,7 +216,8 @@ export const concoursSectors: ConcoursSector[] = [
     order: 3,
     icon: 'leaf-outline',
     blurb: 'Agronomy, agro-industry, animal science and veterinary careers that feed the nation.',
-    headline: 'Feed the nation and build agribusiness. Skyline Academy gets you into the top faculties.',
+    headline:
+      'Feed the nation and build agribusiness. Skyline Academy gets you into the top faculties.',
     listLabel: 'Fields',
     fields: [
       {
@@ -224,7 +240,10 @@ export const concoursSectors: ConcoursSector[] = [
         summary:
           'Trains professionals who care for animal health and support farmers in the field. Programmes are practical, and graduates often work for MINADER or MINEPIA.',
         requirements: [ANY_2_A_LEVEL, O_LEVEL_4, BAC_PROB_C_D],
-        schools: ['Faculty of Agriculture and Veterinary Medicine (FAVM), Buea', 'ENSAI, Ngaoundéré'],
+        schools: [
+          'Faculty of Agriculture and Veterinary Medicine (FAVM), Buea',
+          'ENSAI, Ngaoundéré',
+        ],
         examWindow: 'September',
         institutionIds: ['favm-buea'],
       },
@@ -290,7 +309,10 @@ export const concoursSectors: ConcoursSector[] = [
         name: 'ENS Yaoundé and ENS Bambili (Secondary Teaching)',
         summary:
           'Trains secondary school teachers in specific subjects, with teaching methods and practice included. Graduates are posted to public schools by the state.',
-        requirements: ['First cycle: Baccalauréat or GCE A Level', 'Second cycle: Licence (Bachelor’s degree)'],
+        requirements: [
+          'First cycle: Baccalauréat or GCE A Level',
+          'Second cycle: Licence (Bachelor’s degree)',
+        ],
         schools: ['ENS, Yaoundé', 'ENS, Bambili'],
         examWindow: 'Jul–Sep',
       },
@@ -316,3 +338,188 @@ export const concoursSectors: ConcoursSector[] = [
     ],
   },
 ];
+
+// ─── Section 8 data for Skyler (drafts to review) ────────────────────────────
+
+const SECTOR_DIFFICULTY: Record<SectorId, ConcoursDifficulty> = {
+  health: 5,
+  engineering: 4,
+  agriculture: 3,
+  administration: 5,
+  teaching: 3,
+};
+
+const BIO_CHEM = ['Biology', 'Chemistry'];
+const MATHS_PHYSICS = ['Mathematics', 'Physics'];
+
+const FIELD_META: Record<string, FieldMeta> = {
+  medicine: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: ['Physics'],
+    difficulty: 5,
+    duration: '7 years',
+    careers: ['Doctor', 'Pharmacist', 'Dentist'],
+  },
+  nursing: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: [],
+    difficulty: 4,
+    duration: '3 years',
+    careers: ['Nurse'],
+  },
+  'medical-lab': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: [],
+    difficulty: 4,
+    duration: '3 years',
+    careers: ['Medical laboratory scientist', 'Lab technician'],
+  },
+  midwifery: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: [],
+    difficulty: 4,
+    duration: '3 years',
+    careers: ['Midwife'],
+  },
+  srn: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: BIO_CHEM,
+    difficulty: 3,
+    careers: ['State registered nurse'],
+  },
+  'public-health': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: [],
+    difficulty: 3,
+    careers: ['Public health officer', 'Health promotion officer'],
+  },
+  'biomedical-sciences': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: BIO_CHEM,
+    recommendedSubjects: ['Physics'],
+    difficulty: 4,
+    careers: ['Biomedical scientist', 'Researcher'],
+  },
+
+  'fet-buea': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: ['Chemistry'],
+    difficulty: 4,
+    careers: ['Civil engineer', 'Electrical engineer', 'Computer engineer'],
+  },
+  'cot-buea': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: [],
+    difficulty: 4,
+    careers: ['Computer engineer', 'Electrical engineer'],
+  },
+  'nahpi-bamenda': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: ['Chemistry'],
+    difficulty: 4,
+    careers: ['Civil engineer', 'Mechanical engineer', 'Computer engineer'],
+  },
+  polytech: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: ['Chemistry'],
+    difficulty: 5,
+    careers: ['Engineer'],
+  },
+  iut: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: [],
+    difficulty: 3,
+    duration: '2–3 years',
+    careers: ['Technician', 'Technical engineer'],
+  },
+  'public-works': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: MATHS_PHYSICS,
+    recommendedSubjects: [],
+    difficulty: 4,
+    careers: ['Civil engineer', 'Surveyor', 'Works technician'],
+  },
+
+  agronomy: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: BIO_CHEM,
+    difficulty: 3,
+    careers: ['Agronomist', 'Agro-industry engineer', 'Animal scientist'],
+  },
+  veterinary: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: BIO_CHEM,
+    difficulty: 3,
+    careers: ['Veterinary technician', 'Agricultural technician'],
+  },
+
+  enam: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: [],
+    difficulty: 5,
+    careers: ['Administrator', 'Magistrate', 'Tax or customs inspector'],
+  },
+  iric: {
+    entryLevel: 'after-degree',
+    requiredSubjects: [],
+    recommendedSubjects: [],
+    difficulty: 5,
+    careers: ['Diplomat', 'International affairs officer'],
+  },
+  esstic: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: [],
+    difficulty: 4,
+    careers: ['Journalist', 'Communication officer'],
+  },
+
+  ens: {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: [],
+    difficulty: 4,
+    careers: ['Secondary school teacher'],
+  },
+  'technical-teaching': {
+    entryLevel: 'after-a-level',
+    requiredSubjects: [],
+    recommendedSubjects: ['Mathematics', 'Physics'],
+    difficulty: 3,
+    careers: ['Technical school teacher'],
+  },
+  'primary-teaching': {
+    entryLevel: 'after-o-level',
+    requiredSubjects: [],
+    recommendedSubjects: [],
+    difficulty: 2,
+    duration: '2 years',
+    careers: ['Nursery or primary teacher'],
+  },
+};
+
+function withMeta(field: DraftField): ConcoursField {
+  const meta = FIELD_META[field.id];
+  if (!meta) throw new Error(`concoursSectors: no FIELD_META entry for "${field.id}"`);
+  return { ...field, ...meta, lastVerified: null };
+}
+
+export const concoursSectors: ConcoursSector[] = draftSectors.map((sector) => ({
+  ...sector,
+  difficulty: SECTOR_DIFFICULTY[sector.id],
+  fields: sector.fields.map(withMeta),
+}));

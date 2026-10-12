@@ -21,7 +21,7 @@ export function Logo({ onDark = false, className }: { onDark?: boolean; classNam
         variant="label"
         className={cn('font-display tracking-[2px]', onDark ? 'text-white' : 'text-brand-deep')}
       >
-        SKYLINE
+        SKYLINE ACADEMY
       </Text>
     </View>
   );
