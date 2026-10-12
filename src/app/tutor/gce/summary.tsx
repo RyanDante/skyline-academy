@@ -26,6 +26,7 @@ export default function GceTutorSummary() {
   const addToRevisionPlan = useSessionStore((s) => s.addToRevisionPlan);
   const topics = useTopics(session?.subjectId);
   const [saved, setSaved] = useState(false);
+  const [now] = useState(Date.now);
 
   const { correct, marked, topicResults } = useMemo(() => {
     if (!session) return { correct: 0, marked: 0, topicResults: [] as TopicResult[] };
@@ -65,7 +66,7 @@ export default function GceTutorSummary() {
   }
 
   const weak = topicResults.filter((t) => !t.strong);
-  const duration = (session.finishedAt ?? Date.now()) - session.startedAt;
+  const duration = (session.finishedAt ?? now) - session.startedAt;
 
   const done = () => {
     clear();

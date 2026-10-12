@@ -37,18 +37,19 @@ Then scan the QR code with Expo Go. This runs demo mode with Firebase and the PD
 
 ### Build with EAS (APK for testers)
 
-Without Firebase config files, builds are **demo builds**: `build-flags.js` leaves Firebase out of the native app (`react-native.config.js`) and stubs its JavaScript (`metro.config.js`). Every profile in `eas.json` runs demo mode except `production`.
+Without Firebase config files, builds are **demo builds**: `build-flags.js` leaves Firebase out of the native app (`react-native.config.js`) and stubs its JavaScript (`metro.config.js`). The `preview` and `production-test` profiles use bundled sample data; `production-test` is a release-mode, installable APK for on-device testing. It is not a store release.
 
 ```bash
 npm install -g eas-cli
 eas login
-eas init
-eas build --platform android --profile preview
+eas build --platform android --profile production-test
 ```
 
 The project is already linked to `@ryandantedaemon/skyline-academy`: its ID and owner are in `app.config.ts`. You only need `eas init` if you move the project to another Expo account; because the config is dynamic, paste the new ID into `EAS_PROJECT_ID` and the account name into `owner` in `app.config.ts`. On the first build, EAS asks to generate an Android keystore; answer yes and EAS stores it for you. Values in `eas.json` env blocks can't be empty strings.
 
 When the build finishes, EAS gives a link and QR code for an installable APK to send to testers. iOS builds need an Apple Developer account; run `eas build --platform ios --profile preview` and register testers' devices with `eas device:create`.
+
+The `production` profile builds an installable Android APK against live Firebase services. Add the Android and iOS Firebase config files as EAS **file** environment variables named `GOOGLE_SERVICES_JSON` and `GOOGLE_SERVICES_PLIST` in the `production` environment. The build fails early if live mode is selected without Firebase config. Keep payment and AI provider credentials in Firebase Functions secrets; never put them in `EXPO_PUBLIC_*` variables.
 
 ## 2. Connect Firebase
 

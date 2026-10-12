@@ -9,6 +9,12 @@ import buildFlags from './build-flags';
 const { hasAndroidFirebase, hasIosFirebase, firebaseConfigured, androidGoogleServices, iosGoogleServices } =
   buildFlags;
 
+if (process.env.EXPO_PUBLIC_USE_MOCKS !== 'true' && !firebaseConfigured) {
+  throw new Error(
+    'Live builds require Firebase native config. Add GOOGLE_SERVICES_JSON and GOOGLE_SERVICES_PLIST to the EAS production environment, or use the production-test profile.',
+  );
+}
+
 /** From `eas init`: https://expo.dev/accounts/ryandantedaemon/projects/skyline-academy */
 const EAS_PROJECT_ID = '3fbbf9ac-0a4f-4c95-bb73-00b9e324acde';
 
@@ -43,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     'expo-sqlite',
     'expo-font',
+    'expo-sharing',
     [
       'expo-splash-screen',
       { image: './assets/images/splash.png', backgroundColor: '#0A7375', imageWidth: 180 },
