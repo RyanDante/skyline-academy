@@ -143,6 +143,14 @@ export const questions: Question[] = [
   mcq('op24-1', OP1, 'o-physics', 1, 'What is the SI unit of force?', ['Joule', 'Watt', 'Newton', 'Pascal'], 'C', ['o-phy-forces']),
   mcq('op24-2', OP1, 'o-physics', 2, 'A runner covers 100 m in 20 s. What is the average speed?', ['2000 m/s', '0.2 m/s', '5 m/s', '120 m/s'], 'C', ['o-phy-forces']),
   mcq('op24-3', OP1, 'o-physics', 3, 'Which material is a good electrical conductor?', ['Copper', 'Rubber', 'Glass', 'Dry wood'], 'A', ['o-phy-electricity']),
+
+  // ─── Advanced Proficiency (Difficulty 3 · Concours & Higher Rigor) ──────────
+  mcq('ap24-adv1', AP1, 'a-physics', 8, 'A solid cylinder of mass M and radius R rolls without slipping down a plane inclined at angle θ. What is its linear acceleration down the incline?', ['g sin θ', '2/3 g sin θ', '1/2 g sin θ', '3/4 g sin θ'], 'B', ['a-phy-mechanics'], 3),
+  mcq('ap24-adv2', AP1, 'a-physics', 9, 'In an alternating current LCR series circuit at resonance, the phase angle between the current and applied voltage is:', ['0 rad', 'π/4 rad', 'π/2 rad', 'π rad'], 'A', ['a-phy-electricity'], 3),
+  mcq('am24-adv1', AM1, 'a-maths', 5, 'Evaluate the improper integral $\\int_0^\\infty x e^{-x}\\,dx$.', ['1', '0', 'e', '∞'], 'A', ['a-mat-calculus'], 3),
+  mcq('am24-adv2', AM1, 'a-maths', 6, 'If $z = \\cos\\theta + i\\sin\\theta$, which expression equals $z^n + z^{-n}$ by de Moivre’s theorem?', ['2 cos(nθ)', '2i sin(nθ)', 'cos(nθ)', 'sin(nθ)'], 'A', ['a-mat-complex'], 3),
+  mcq('ac24-adv1', AC1, 'a-chemistry', 4, 'For the gas reaction $2\\text{SO}_2(g) + \\text{O}_2(g) \\rightleftharpoons 2\\text{SO}_3(g)$ with $\\Delta H < 0$, which condition maximises the equilibrium yield of $\\text{SO}_3$?', ['High temperature, low pressure', 'Low temperature, high pressure', 'High temperature, high pressure', 'Low temperature, low pressure'], 'B', ['a-che-kinetics'], 3),
+  mcq('ab24-adv1', AB1, 'a-biology', 4, 'In a testcross $AaBb \\times aabb$, recombinant offspring account for 16% of total progeny. What is the map distance between genes A and B?', ['8 cM', '16 cM', '32 cM', '4 cM'], 'B', ['a-bio-genetics'], 3),
 ];
 
 // ─── Solutions ───────────────────────────────────────────────────────────────
@@ -218,6 +226,12 @@ export const solutions: Solution[] = [
   quick('op24-1', MBAH, 'Force is measured in newtons (N).', '', 'C — Newton'),
   quick('op24-2', MBAH, 'Average speed = distance ÷ time.', '100 ÷ 20 = 5 m/s', 'C — 5 m/s'),
   quick('op24-3', MBAH, 'Metals such as copper have free electrons that carry current.', '', 'A — Copper'),
+  quick('ap24-adv1', MBAH, 'For a rolling solid cylinder I = (1/2)MR². Newton’s 2nd Law gives a = g sinθ / (1 + I/(MR²)) = g sinθ / (1 + 1/2) = (2/3)g sinθ.', 'a = (2/3)g sinθ', 'B — 2/3 g sin θ'),
+  quick('ap24-adv2', MBAH, 'At electrical resonance, inductive reactance equals capacitive reactance (XL = XC). Net reactance is zero, so impedance is purely resistive and phase angle φ = 0.', 'tan φ = (XL - XC)/R = 0', 'A — 0 rad'),
+  quick('am24-adv1', NJI, 'Integrate by parts: let u = x, dv = e⁻ˣ dx. [-x e⁻ˣ] from 0 to ∞ is 0; ∫₀^∞ e⁻ˣ dx = 1.', '∫ x e⁻ˣ dx = 1', 'A — 1'),
+  quick('am24-adv2', NJI, 'By de Moivre’s theorem, zⁿ = cos(nθ) + i sin(nθ) and z⁻ⁿ = cos(nθ) − i sin(nθ). Adding them yields 2 cos(nθ).', 'zⁿ + z⁻ⁿ = 2 cos(nθ)', 'A — 2 cos(nθ)'),
+  quick('ac24-adv1', TABI, 'By Le Chatelier’s principle, lowering temperature favours the exothermic forward reaction (ΔH < 0), and increasing pressure favours the side with fewer gas moles (3 moles reactant → 2 moles product).', 'Low T, high P favours SO₃', 'B — Low temperature, high pressure'),
+  quick('ab24-adv1', ASHU, '1% recombination frequency equals 1 map unit (cM). 16% recombinants directly corresponds to 16 centimorgans (cM).', '16% recombination = 16 cM', 'B — 16 cM'),
 ];
 
 // ─── Concours ────────────────────────────────────────────────────────────────

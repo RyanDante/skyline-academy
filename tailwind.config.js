@@ -10,8 +10,8 @@ const withAlpha = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{ts,tsx}'],
-  presets: [require('nativewind/preset')],
+  darkMode: 'class',
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -42,11 +42,11 @@ module.exports = {
         danger: withAlpha('danger'),
       },
       fontFamily: {
-        body: ['Inter_400Regular'],
-        'body-medium': ['Inter_500Medium'],
-        'body-semibold': ['Inter_600SemiBold'],
-        display: ['PlusJakartaSans_700Bold'],
-        'display-semibold': ['PlusJakartaSans_600SemiBold'],
+        body: ['Inter', 'system-ui', 'sans-serif'],
+        'body-medium': ['Inter', 'system-ui', 'sans-serif'],
+        'body-semibold': ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'system-ui', 'sans-serif'],
+        'display-semibold': ['Poppins', 'system-ui', 'sans-serif'],
       },
       // Brief section 4.2. Never use body text below 14.
       fontSize: {

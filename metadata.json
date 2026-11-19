@@ -1,0 +1,6 @@
+{
+  "name": "Skyline Academy",
+  "description": "Anglophone Cameroon GCE past papers, teacher-marked solutions, Concours readiness bridge, and AI Tutor.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

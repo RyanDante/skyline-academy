@@ -1,63 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-ink));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  }
+}
+
 /*
- * Design system v2 (Skyline design brief, section 4). Values are space-separated RGB channels so
- * Tailwind alpha modifiers work (bg-brand/20). Brand teal and orange keep their existing values.
+ * Skyline Academy Design System
+ * Primary: Bright turquoise #00B8B0 (rgb 0 184 176)
+ * Accent: Orange #FF8A00 (rgb 255 138 0)
+ * Background Light: Soft white #F5FAFA (rgb 245 250 250)
+ * Text Light: Deep teal #173A43 (rgb 23 58 67)
+ * Dark Theme: Dark teal-black #091113, surface #121D20, text #EDF3F4
  */
 @layer base {
   :root {
-    --color-bg: 244 250 251; /* #F4FAFB mint background */
+    --color-bg: 245 250 250; /* #F5FAFA soft white */
     --color-surface: 255 255 255;
-    --color-surface-alt: 236 248 250;
-    --color-ink: 20 32 42; /* #14202A */
-    --color-muted: 79 95 104; /* #4F5F68, 4.5:1+ on white */
-    --color-line: 214 234 236; /* #D6EAEC */
+    --color-surface-alt: 238 248 248; /* soft turquoise tint */
+    --color-ink: 23 58 67; /* #173A43 deep teal */
+    --color-muted: 85 115 123; /* #55737B legible teal-grey */
+    --color-line: 213 234 233; /* #D5EAE9 subtle border */
 
-    --color-brand: 14 152 154; /* #0E989A, illustration accents */
-    --color-brand-deep: 10 115 117; /* #0A7375, primary teal: buttons, links, active tab */
-    --color-brand-pressed: 8 79 76; /* #084F4C */
-    --color-cyan: 176 229 235; /* #B0E5EB teal tint */
+    --color-brand: 0 184 176; /* #00B8B0 bright turquoise */
+    --color-brand-deep: 8 127 122; /* #087F7A supporting teal */
+    --color-brand-pressed: 6 99 95;
+    --color-cyan: 176 235 233;
 
-    --color-accent: 255 130 10; /* #FF820A "go" orange, dark text only */
-    --color-accent-deep: 179 84 0; /* #B35400, orange text on white */
-    --color-accent-soft: 255 241 227;
+    --color-accent: 255 138 0; /* #FF8A00 vibrant orange */
+    --color-accent-deep: 217 114 0;
+    --color-accent-soft: 255 244 230;
 
-    --color-skyler: 75 73 200; /* #4B49C8 */
-    --color-skyler-soft: 236 236 251; /* #ECECFB */
+    --color-skyler: 0 184 176;
+    --color-skyler-soft: 238 248 248;
+
+    --color-on-accent: 255 255 255;
+    --color-on-brand: 255 255 255;
+    --color-success: 16 185 129;
+    --color-danger: 239 68 68;
+  }
+
+  html.dark,
+  :root.dark,
+  .dark {
+    --color-bg: 9 17 19; /* #091113 */
+    --color-surface: 18 29 32; /* #121D20 */
+    --color-surface-alt: 21 41 45;
+    --color-ink: 237 243 244; /* #EDF3F4 */
+    --color-muted: 168 182 186; /* #A8B6BA */
+    --color-line: 38 58 62; /* #263A3E */
+
+    --color-brand: 0 184 176;
+    --color-brand-deep: 110 205 208;
+    --color-brand-pressed: 150 220 222;
+    --color-cyan: 28 72 78;
+
+    --color-accent: 255 138 0;
+    --color-accent-deep: 255 168 92;
+    --color-accent-soft: 58 35 12;
+
+    --color-skyler: 0 184 176;
+    --color-skyler-soft: 36 35 74;
 
     --color-on-accent: 20 32 42;
     --color-on-brand: 255 255 255;
-    --color-success: 46 158 91; /* #2E9E5B */
-    --color-danger: 214 69 69; /* #D64545 */
+    --color-success: 74 222 128;
+    --color-danger: 248 113 113;
+  }
+}
+
+/* Comprehensive Dark Mode Adaptations for existing Tailwind utility classes */
+@layer utilities {
+  html.dark body {
+    background-color: #091113;
+    color: #EDF3F4;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-bg: 9 17 19;
-      --color-surface: 18 29 32;
-      --color-surface-alt: 21 41 45;
-      --color-ink: 237 243 244;
-      --color-muted: 168 182 186;
-      --color-line: 38 58 62;
+  html.dark .bg-white {
+    background-color: #121D20 !important;
+  }
 
-      --color-brand: 14 152 154;
-      --color-brand-deep: 110 205 208;
-      --color-brand-pressed: 150 220 222;
-      --color-cyan: 28 72 78;
+  html.dark .bg-\[\#F5FAFA\] {
+    background-color: #0B1618 !important;
+  }
 
-      --color-accent: 255 130 10;
-      --color-accent-deep: 255 168 92;
-      --color-accent-soft: 58 35 12;
+  html.dark .bg-\[\#F5FAFA\]\/95 {
+    background-color: rgba(11, 22, 24, 0.95) !important;
+  }
 
-      --color-skyler: 150 148 240;
-      --color-skyler-soft: 36 35 74;
+  html.dark .bg-\[\#EAFBF9\] {
+    background-color: #14282B !important;
+  }
 
-      --color-on-accent: 20 32 42;
-      --color-on-brand: 255 255 255;
-      --color-success: 74 222 128;
-      --color-danger: 248 113 113;
-    }
+  html.dark .bg-\[\#EEF8F8\] {
+    background-color: #14282B !important;
+  }
+
+  html.dark .border-\[\#D5EAE9\] {
+    border-color: #263A3E !important;
+  }
+
+  html.dark .border-\[\#E0F2F1\] {
+    border-color: #1E3438 !important;
+  }
+
+  html.dark .border-\[\#C5F3EE\] {
+    border-color: #1A3E41 !important;
+  }
+
+  html.dark .text-\[\#173A43\] {
+    color: #EDF3F4 !important;
+  }
+
+  html.dark .text-\[\#55737B\] {
+    color: #9EAFB3 !important;
+  }
+
+  html.dark .hover\:bg-white:hover {
+    background-color: #1A282C !important;
+  }
+
+  html.dark input,
+  html.dark select,
+  html.dark textarea {
+    color-scheme: dark;
   }
 }

@@ -1,14 +1,15 @@
-import { useColorScheme } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useAppStore } from '@/stores/appStore';
 
 /**
  * Raw colour values for places Tailwind classes can't reach: SVG fills,
- * navigation options, status bar, ActivityIndicator, icons. Mirrors global.css.
+ * canvas drawings, status bars, and icons.
  */
 export const palette = {
-  orange: '#FF820A',
-  orangeDeep: '#B35400',
-  teal: '#0E989A',
-  tealDeep: '#0A7375',
+  orange: '#FF8A00',
+  orangeDeep: '#D97200',
+  teal: '#00B8B0',
+  tealDeep: '#087F7A',
   cyan: '#B0E5EB',
   indigo: '#4B49C8',
   indigoSoft: '#ECECFB',
@@ -34,18 +35,18 @@ export interface ThemeColors {
 }
 
 const light: ThemeColors = {
-  bg: '#F4FAFB',
+  bg: '#F5FAFA',
   surface: '#FFFFFF',
-  ink: '#14202A',
-  muted: '#4F5F68',
-  line: '#D6EAEC',
+  ink: '#173A43',
+  muted: '#55737B',
+  line: '#D5EAE9',
   brand: palette.teal,
   brandDeep: palette.tealDeep,
   accent: palette.orange,
   accentDeep: palette.orangeDeep,
-  skyler: palette.indigo,
-  success: '#2E9E5B',
-  danger: '#D64545',
+  skyler: '#00B8B0',
+  success: '#10B981',
+  danger: '#EF4444',
   heroBg: palette.tealDeep,
   heroSilhouette: palette.teal,
 };
@@ -56,7 +57,7 @@ const dark: ThemeColors = {
   ink: '#EDF3F4',
   muted: '#A8B6BA',
   line: '#263A3E',
-  brand: palette.teal,
+  brand: '#00B8B0',
   brandDeep: '#6ECDD0',
   accent: palette.orange,
   accentDeep: '#FFA85C',
@@ -68,5 +69,22 @@ const dark: ThemeColors = {
 };
 
 export function useThemeColors(): ThemeColors {
-  return useColorScheme() === 'dark' ? dark : light;
+  const theme = useAppStore((s) => s.settings?.theme ?? 'system');
+  const [isSystemDark, setIsSystemDark] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = (e: MediaQueryListEvent) => setIsSystemDark(e.matches);
+    media.addEventListener('change', handler);
+    return () => media.removeEventListener('change', handler);
+  }, []);
+
+  const isDark = theme === 'dark' || (theme === 'system' && isSystemDark);
+  return isDark ? dark : light;
 }

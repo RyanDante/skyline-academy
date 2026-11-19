@@ -1,12 +1,45 @@
 {
-  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUncheckedIndexedAccess": false,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["node", "vite/client"]
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "nativewind-env.d.ts"],
-  "exclude": ["node_modules", "firebase/functions"]
+  "include": ["src", "vite.config.ts"],
+  "exclude": [
+    "node_modules",
+    "firebase",
+    "src/app",
+    "src/components/ui",
+    "src/components/brand",
+    "src/components/concours",
+    "src/components/home",
+    "src/components/share",
+    "src/components/study",
+    "src/components/tutor",
+    "src/hooks",
+    "src/db",
+    "src/services",
+    "src/stores/gceTutorStore.ts",
+    "src/stores/quizStore.ts",
+    "src/stores/sessionStore.ts",
+    "src/stores/skylerStore.ts",
+    "src/lib/nativewind.ts",
+    "src/lib/firebase.ts",
+    "src/theme"
+  ]
 }
