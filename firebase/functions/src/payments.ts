@@ -11,6 +11,7 @@ import { grantEntitlementForPayment } from './paymentGrant.js';
 interface CheckoutRequest {
   productId: ProductId;
   subjectId?: string;
+  paperId?: string;
   provider: 'mtn' | 'orange';
   payerPhone: string;
 }
@@ -51,6 +52,9 @@ export const createCheckout = onCall(
     if (typeof data.payerPhone !== 'string' || !/^\+2376\d{8}$/.test(data.payerPhone)) {
       throw new HttpsError('invalid-argument', 'Enter a Cameroon mobile number.');
     }
+    if (data.productId === 'paper-answers' && (typeof data.paperId !== 'string' || !/^[\w-]{1,100}$/.test(data.paperId))) {
+      throw new HttpsError('invalid-argument', 'Choose a paper.');
+    }
     if (data.productId === 'subject-pass' && !data.subjectId) {
       throw new HttpsError('invalid-argument', 'Choose a subject.');
     }
@@ -61,6 +65,7 @@ export const createCheckout = onCall(
       uid,
       productId: data.productId,
       subjectId: data.subjectId ?? null,
+      paperId: data.paperId ?? null,
       amount,
       currency: 'XAF',
       provider: data.provider,

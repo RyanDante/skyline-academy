@@ -16,6 +16,14 @@ export const profileService = {
     );
   },
 
+  /** The profile saved by a previous sign-up, so signing in on a new phone restores it. */
+  async load(uid: string): Promise<UserProfile | null> {
+    if (config.useMocks) return null;
+    const snap = await getDoc(doc(db(), COLLECTIONS.users, uid));
+    const data = snap.data() as { profile?: Omit<UserProfile, 'uid'> } | undefined;
+    return data?.profile ? { ...data.profile, uid } : null;
+  },
+
   async entitlement(uid: string): Promise<Entitlement | null> {
     if (config.useMocks) return null;
     const snap = await getDoc(doc(db(), COLLECTIONS.users, uid));

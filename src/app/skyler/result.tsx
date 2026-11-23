@@ -86,7 +86,7 @@ export default function SkylerResult() {
     <Screen
       topBar={<AiHeader persona="skyler" onBack={() => router.replace('/(tabs)/tutor')} />}
       hero={
-        <View className="items-center gap-3 px-4 py-8" style={{ backgroundColor: palette.indigo }}>
+        <View className="items-center gap-3 px-4 py-8" style={{ backgroundColor: palette.orange }}>
           <View className="h-16 w-16 items-center justify-center rounded-full bg-white/15">
             <Ionicons name={top.icon as IconName} size={32} color={palette.white} />
           </View>
@@ -159,7 +159,7 @@ export default function SkylerResult() {
                   router.push({ pathname: '/concours/sector/[sectorId]', params: { sectorId: s!.id } })
                 }
               >
-                <Ionicons name={s!.icon as IconName} size={22} color={palette.indigo} />
+                <Ionicons name={s!.icon as IconName} size={22} color={palette.orangeDeep} />
                 <Text variant="h3">{s!.name}</Text>
               </Card>
             ))}

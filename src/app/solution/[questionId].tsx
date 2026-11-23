@@ -4,7 +4,7 @@ import { QuestionCard } from '@/components/study/QuestionCard';
 import { SolutionView } from '@/components/study/SolutionView';
 import { Button, EmptyState, ErrorState, Screen, ScreenHeader, SkeletonList } from '@/components/ui';
 import { useQuestion, useSolution } from '@/hooks/queries';
-import { hasFullAccess, useSessionStore } from '@/stores/sessionStore';
+import { hasPaperAnswers, useSessionStore } from '@/stores/sessionStore';
 
 export default function SolutionScreen() {
   const { questionId } = useLocalSearchParams<{ questionId: string }>();
@@ -14,7 +14,7 @@ export default function SolutionScreen() {
 
   const q = question.data;
   const s = solution.data;
-  const unlocked = !!s && (s.tier === 'free' || hasFullAccess(entitlement, q?.subjectId));
+  const unlocked = !!s && !!q && (s.tier === 'free' || hasPaperAnswers(entitlement, q.paperId, q.subjectId));
 
   return (
     <Screen
@@ -40,7 +40,7 @@ export default function SolutionScreen() {
         <>
           <QuestionCard question={q} selected={q.correctKey ?? null} reveal={q.type === 'mcq'} />
           {s ? (
-            <SolutionView solution={s} unlocked={unlocked} onUnlock={() => router.push('/paywall')} />
+            <SolutionView solution={s} unlocked={unlocked} onUnlock={() => router.push({ pathname: '/unlock/[paperId]', params: { paperId: q.paperId } })} />
           ) : (
             <EmptyState
               icon="create-outline"

@@ -31,6 +31,7 @@ export interface Entitlement {
   plan: 'free' | 'pass';
   expiresAt: string | null;
   subjectPasses: string[];
+  unlockedPaperIds?: string[];
 }
 
 export async function getEntitlement(uid: string): Promise<Entitlement> {

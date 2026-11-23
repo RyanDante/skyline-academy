@@ -1,21 +1,32 @@
 import type { Ionicons } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
 
+import { subjectColors } from '@/theme/tokens';
+
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
-/** Line icon per GCE subject (design brief, image slot 9). Matched on the subject name. */
-const ICONS: [RegExp, IconName][] = [
-  [/math/i, 'calculator-outline'],
-  [/physics/i, 'magnet-outline'],
-  [/chemistry/i, 'flask-outline'],
-  [/biology/i, 'leaf-outline'],
-  [/computer|ict/i, 'laptop-outline'],
-  [/geograph/i, 'earth-outline'],
-  [/econom/i, 'trending-up-outline'],
-  [/history/i, 'time-outline'],
-  [/english|literature|french/i, 'book-outline'],
+/** Icon and colour key per GCE subject (GCE mockup tiles). Matched on the subject name. */
+const SUBJECTS: [RegExp, IconName, keyof typeof subjectColors][] = [
+  [/further/i, 'grid', 'further'],
+  [/math/i, 'calculator', 'maths'],
+  [/physics/i, 'planet', 'physics'],
+  [/chemistry/i, 'flask', 'chemistry'],
+  [/biology/i, 'leaf', 'biology'],
+  [/computer|ict/i, 'laptop', 'ict'],
+  [/geograph/i, 'earth', 'default'],
+  [/econom/i, 'trending-up', 'default'],
+  [/history/i, 'time', 'default'],
+  [/english|literature|french/i, 'book', 'default'],
 ];
 
+function match(name: string) {
+  return SUBJECTS.find(([pattern]) => pattern.test(name));
+}
+
 export function subjectIcon(name: string): IconName {
-  return ICONS.find(([pattern]) => pattern.test(name))?.[1] ?? 'school-outline';
+  return match(name)?.[1] ?? 'school';
+}
+
+export function subjectColor(name: string): { fg: string; bg: string } {
+  return subjectColors[match(name)?.[2] ?? 'default']!;
 }

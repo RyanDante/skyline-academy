@@ -10,9 +10,9 @@ type IconName = ComponentProps<typeof Ionicons>['name'];
 
 const TABS: { name: string; title: string; icon: IconName; iconActive: IconName }[] = [
   { name: 'index', title: 'Home', icon: 'home-outline', iconActive: 'home' },
-  { name: 'gce', title: 'GCE', icon: 'book-outline', iconActive: 'book' },
-  { name: 'concours', title: 'Concours', icon: 'school-outline', iconActive: 'school' },
-  { name: 'tutor', title: 'Tutor', icon: 'chatbubbles-outline', iconActive: 'chatbubbles' },
+  { name: 'gce', title: 'GCE', icon: 'grid-outline', iconActive: 'grid' },
+  { name: 'concours', title: 'Concours', icon: 'compass-outline', iconActive: 'compass' },
+  { name: 'tutor', title: 'Tutor', icon: 'school-outline', iconActive: 'school' },
   { name: 'me', title: 'Me', icon: 'person-outline', iconActive: 'person' },
 ];
 

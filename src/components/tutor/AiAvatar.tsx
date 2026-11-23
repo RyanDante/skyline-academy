@@ -6,8 +6,8 @@ import { palette } from '@/theme/tokens';
 export type AiPersona = 'tutor' | 'skyler';
 
 /**
- * Placeholder avatars until the illustrated characters arrive (design brief, image slot 4):
- * GCE Tutor on teal with a book, Skyler on indigo with a sky motif.
+ * AI avatars from the Tutor mockup: GCE Tutor is an open book on turquoise; Skyler is a
+ * compass on an orange ring. Swap for the illustrated characters when they arrive.
  */
 export function AiAvatar({ persona, size = 64 }: { persona: AiPersona; size?: number }) {
   const tutor = persona === 'tutor';
@@ -19,14 +19,14 @@ export function AiAvatar({ persona, size = 64 }: { persona: AiPersona; size?: nu
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: tutor ? palette.tealDeep : palette.indigo,
+        backgroundColor: tutor ? palette.teal : palette.tealDeep,
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: tutor ? palette.cyan : palette.indigoSoft,
+        borderWidth: tutor ? 0 : Math.max(3, size * 0.08),
+        borderColor: tutor ? 'transparent' : palette.orange,
       }}
     >
-      <Ionicons name={tutor ? 'book' : 'sparkles'} size={size * 0.45} color={palette.white} />
+      <Ionicons name={tutor ? 'book' : 'compass'} size={size * 0.5} color={palette.white} />
     </View>
   );
 }

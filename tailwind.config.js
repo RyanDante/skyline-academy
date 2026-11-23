@@ -2,16 +2,16 @@
  * Skyline design tokens. Colours resolve to CSS variables defined in global.css so
  * every class (bg-surface, text-ink, ...) adapts to light and dark mode automatically.
  *
- * Brand: orange #FF820A, teal #0E989A / primary teal #0A7375, light cyan #B0E5EB.
- * `brand-deep` is the primary teal (buttons, links, active tab). Orange is the single
- * "go" action per screen and always carries dark text. `skyler` is Skyler's indigo.
+ * Brand (design/mockups): bright turquoise #00B8B0, orange #FF8A00, deep-teal text #173A43.
+ * `brand-deep` (#087F7A) is the text-safe teal for buttons, links and the active tab.
+ * `skyler` is Skyler's orange accent.
  */
 const withAlpha = (name) => `rgb(var(--color-${name}) / <alpha-value>)`;
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: ['./src/**/*.{ts,tsx}'],
+  presets: [require('nativewind/preset')],
   theme: {
     extend: {
       colors: {
@@ -42,11 +42,11 @@ module.exports = {
         danger: withAlpha('danger'),
       },
       fontFamily: {
-        body: ['Inter', 'system-ui', 'sans-serif'],
-        'body-medium': ['Inter', 'system-ui', 'sans-serif'],
-        'body-semibold': ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Poppins', 'system-ui', 'sans-serif'],
-        'display-semibold': ['Poppins', 'system-ui', 'sans-serif'],
+        body: ['Inter_400Regular'],
+        'body-medium': ['Inter_500Medium'],
+        'body-semibold': ['Inter_600SemiBold'],
+        display: ['Poppins_700Bold'],
+        'display-semibold': ['Poppins_600SemiBold'],
       },
       // Brief section 4.2. Never use body text below 14.
       fontSize: {
@@ -61,7 +61,7 @@ module.exports = {
         hero: ['40px', { lineHeight: '44px' }],
       },
       borderRadius: {
-        card: '16px',
+        card: '20px',
         control: '14px',
       },
     },

@@ -19,6 +19,7 @@ export async function grantProduct(
   uid: string,
   productId: ProductId,
   subjectId?: string,
+  paperId?: string,
 ): Promise<Entitlement> {
   const ref = db.collection('users').doc(uid);
   const snap = await tx.get(ref);
@@ -42,6 +43,14 @@ export async function grantProduct(
       next = {
         ...current,
         subjectPasses: subjectId ? [...new Set([...current.subjectPasses, subjectId])] : current.subjectPasses,
+      };
+      break;
+    case 'paper-answers':
+      next = {
+        ...current,
+        unlockedPaperIds: paperId
+          ? [...new Set([...(current.unlockedPaperIds ?? []), paperId])]
+          : (current.unlockedPaperIds ?? []),
       };
       break;
   }

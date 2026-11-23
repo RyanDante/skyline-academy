@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { product } from '@/lib/config';
+import { createId } from '@/lib/id';
 import { todayKey } from '@/lib/dates';
 import type { Entitlement, UserProfile } from '@/types/models';
 
@@ -21,6 +22,65 @@ export interface LastPaper {
   total: number;
 }
 
+export type ThemeMode = 'system' | 'light' | 'dark';
+export type ReminderSlot = 'morning' | 'afternoon' | 'evening' | 'night';
+
+/** Reminder times per slot (24h). */
+export const REMINDER_TIMES: Record<ReminderSlot, { hour: number; minute: number; label: string }> = {
+  morning: { hour: 7, minute: 0, label: 'Morning · 7:00' },
+  afternoon: { hour: 14, minute: 0, label: 'Afternoon · 14:00' },
+  evening: { hour: 18, minute: 30, label: 'Evening · 18:30' },
+  night: { hour: 21, minute: 0, label: 'Night · 21:00' },
+};
+
+export interface AppSettings {
+  theme: ThemeMode;
+  /** Questions per day the student aims for (weekly goal = 7×). */
+  dailyGoal: number;
+  reminders: { enabled: boolean; slot: ReminderSlot; frequency: 'daily' | 'weekdays' };
+  haptics: boolean;
+  /** Don't load images or stream PDFs unless the student taps. */
+  lowData: boolean;
+  /** Show the answer straight after each practice question. */
+  showExplanationsImmediately: boolean;
+  /** Show a countdown in timed mocks. */
+  countdownTimer: boolean;
+}
+
+export const DEFAULT_SETTINGS: AppSettings = {
+  theme: 'system',
+  dailyGoal: 10,
+  reminders: { enabled: false, slot: 'evening', frequency: 'daily' },
+  haptics: true,
+  lowData: false,
+  showExplanationsImmediately: true,
+  countdownTimer: true,
+};
+
+/** A finished quiz, GCE Tutor session or paper attempt, for "Recent quizzes". */
+export interface QuizRecord {
+  id: string;
+  title: string;
+  subjectId: string;
+  correct: number;
+  total: number;
+  questionIds: string[];
+  finishedAt: number;
+}
+
+export type NotificationKind = 'info' | 'streak' | 'payment' | 'deadline' | 'content';
+
+export interface AppNotification {
+  id: string;
+  kind: NotificationKind;
+  title: string;
+  body: string;
+  createdAt: number;
+  read: boolean;
+  /** Optional in-app route to open. */
+  route?: string;
+}
+
 interface SessionState {
   hydrated: boolean;
   onboardingComplete: boolean;
@@ -36,6 +96,9 @@ interface SessionState {
   tutorUsage: { day: string; count: number };
   joinedGroupIds: string[];
   revisionPlan: RevisionItem[];
+  settings: AppSettings;
+  quizHistory: QuizRecord[];
+  notifications: AppNotification[];
 
   setHydrated: () => void;
   saveProfile: (profile: UserProfile) => void;
@@ -43,6 +106,7 @@ interface SessionState {
   signIn: (uid: string, phone: string | null) => void;
   signOut: () => void;
   setEntitlement: (entitlement: Entitlement) => void;
+  unlockPaper: (paperId: string) => void;
   toggleTarget: (institutionId: string) => { ok: boolean; reason?: string };
   toggleChecklistItem: (institutionId: string, item: string) => void;
   setLastPaper: (lastPaper: LastPaper) => void;
@@ -51,9 +115,16 @@ interface SessionState {
   joinGroup: (groupId: string) => void;
   addToRevisionPlan: (items: Omit<RevisionItem, 'addedAt'>[]) => void;
   removeFromRevisionPlan: (topicId: string) => void;
+  updateSettings: (patch: Partial<AppSettings>) => void;
+  addQuizRecord: (record: Omit<QuizRecord, 'id' | 'finishedAt'>) => void;
+  notify: (n: Omit<AppNotification, 'id' | 'createdAt' | 'read'>) => void;
+  markNotificationsRead: () => void;
+  clearPracticeHistory: () => void;
 }
 
-const FREE: Entitlement = { plan: 'free', expiresAt: null, subjectPasses: [] };
+const FREE: Entitlement = { plan: 'free', expiresAt: null, subjectPasses: [], unlockedPaperIds: [] };
+const MAX_HISTORY = 50;
+const MAX_NOTIFICATIONS = 40;
 
 export const useSessionStore = create<SessionState>()(
   persist(
@@ -70,6 +141,9 @@ export const useSessionStore = create<SessionState>()(
       tutorUsage: { day: todayKey(), count: 0 },
       joinedGroupIds: [],
       revisionPlan: [],
+      settings: DEFAULT_SETTINGS,
+      quizHistory: [],
+      notifications: [],
 
       setHydrated: () => set({ hydrated: true }),
       saveProfile: (profile) => set({ profile }),
@@ -78,6 +152,14 @@ export const useSessionStore = create<SessionState>()(
         set((s) => ({ uid, phone, profile: s.profile ? { ...s.profile, uid } : s.profile })),
       signOut: () => set({ uid: null, phone: null, entitlement: FREE }),
       setEntitlement: (entitlement) => set({ entitlement }),
+
+      unlockPaper: (paperId) =>
+        set((s) => {
+          const ids = s.entitlement.unlockedPaperIds ?? [];
+          return ids.includes(paperId)
+            ? s
+            : { entitlement: { ...s.entitlement, unlockedPaperIds: [...ids, paperId] } };
+        }),
 
       toggleTarget: (institutionId) => {
         const { targets } = get();
@@ -138,21 +220,64 @@ export const useSessionStore = create<SessionState>()(
 
       removeFromRevisionPlan: (topicId) =>
         set((s) => ({ revisionPlan: s.revisionPlan.filter((r) => r.topicId !== topicId) })),
+
+      updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
+
+      addQuizRecord: (record) =>
+        set((s) => ({
+          quizHistory: [
+            { ...record, id: createId(), finishedAt: Date.now() },
+            ...s.quizHistory,
+          ].slice(0, MAX_HISTORY),
+        })),
+
+      notify: (n) =>
+        set((s) => ({
+          notifications: [
+            { ...n, id: createId(), createdAt: Date.now(), read: false },
+            ...s.notifications,
+          ].slice(0, MAX_NOTIFICATIONS),
+        })),
+
+      markNotificationsRead: () =>
+        set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
+
+      clearPracticeHistory: () => set({ quizHistory: [], lastPaper: null, revisionPlan: [] }),
     }),
     {
       name: 'skyline-session',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => Storage),
       partialize: ({ hydrated: _hydrated, ...rest }) => rest,
+      // v1 → v2: settings, quiz history, notifications and per-paper unlocks were added.
+      migrate: (persisted) => {
+        const s = (persisted ?? {}) as Partial<SessionState>;
+        return {
+          ...s,
+          settings: { ...DEFAULT_SETTINGS, ...(s.settings ?? {}) },
+          quizHistory: s.quizHistory ?? [],
+          notifications: s.notifications ?? [],
+          entitlement: { ...FREE, ...(s.entitlement ?? {}) },
+        } as SessionState;
+      },
       onRehydrateStorage: () => (state) => state?.setHydrated(),
     },
   ),
 );
 
-/** True when the student can see everything for this subject. */
+/** True when the Season Pass is active, or the subject has a per-subject pass. */
 export function hasFullAccess(entitlement: Entitlement, subjectId?: string): boolean {
   const active =
     entitlement.plan === 'pass' &&
     (!entitlement.expiresAt || new Date(entitlement.expiresAt).getTime() > Date.now());
   return active || (!!subjectId && entitlement.subjectPasses.includes(subjectId));
+}
+
+/** Full Skyline answers for one paper: pass, subject pass, or the paper bought for 100 XAF. */
+export function hasPaperAnswers(
+  entitlement: Entitlement,
+  paperId: string,
+  subjectId?: string,
+): boolean {
+  return hasFullAccess(entitlement, subjectId) || (entitlement.unlockedPaperIds ?? []).includes(paperId);
 }

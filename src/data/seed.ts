@@ -23,6 +23,8 @@ export const subjects: Subject[] = [
   { id: 'a-physics', code: '780', name: 'Physics', level: 'A', paperCount: 3, yearRange: [2022, 2024] },
   { id: 'a-chemistry', code: '715', name: 'Chemistry', level: 'A', paperCount: 1, yearRange: [2024, 2024] },
   { id: 'a-biology', code: '710', name: 'Biology', level: 'A', paperCount: 1, yearRange: [2024, 2024] },
+  { id: 'a-further-maths', code: '775', name: 'Further Mathematics', level: 'A', paperCount: 0, yearRange: null },
+  { id: 'a-ict', code: '796', name: 'ICT', level: 'A', paperCount: 0, yearRange: null },
   { id: 'o-maths', name: 'Mathematics', level: 'O', paperCount: 0, yearRange: null },
   { id: 'o-physics', name: 'Physics', level: 'O', paperCount: 1, yearRange: [2024, 2024] },
   { id: 'o-chemistry', name: 'Chemistry', level: 'O', paperCount: 0, yearRange: null },
@@ -62,12 +64,12 @@ export const topics: Topic[] = [
 // ─── Papers ──────────────────────────────────────────────────────────────────
 
 export const papers: Paper[] = [
-  { id: 'a-physics-2024-p1', subjectId: 'a-physics', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 7, pdfPath: 'papers/a-physics/2024-p1.pdf' },
+  { id: 'a-physics-2024-p1', subjectId: 'a-physics', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 9, pdfPath: 'papers/a-physics/2024-p1.pdf' },
   { id: 'a-physics-2023-p2', subjectId: 'a-physics', year: 2023, paperNumber: 2, durationMinutes: 150, totalMarks: 100, questionCount: 1, pdfPath: 'papers/a-physics/2023-p2.pdf' },
   { id: 'a-physics-2022-p1', subjectId: 'a-physics', year: 2022, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 0, pdfPath: 'papers/a-physics/2022-p1.pdf' },
-  { id: 'a-maths-2024-p1', subjectId: 'a-maths', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 4 },
-  { id: 'a-chemistry-2024-p1', subjectId: 'a-chemistry', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 3 },
-  { id: 'a-biology-2024-p1', subjectId: 'a-biology', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 3 },
+  { id: 'a-maths-2024-p1', subjectId: 'a-maths', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 6 },
+  { id: 'a-chemistry-2024-p1', subjectId: 'a-chemistry', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 4 },
+  { id: 'a-biology-2024-p1', subjectId: 'a-biology', year: 2024, paperNumber: 1, durationMinutes: 90, totalMarks: 50, questionCount: 4 },
   { id: 'o-physics-2024-p1', subjectId: 'o-physics', year: 2024, paperNumber: 1, durationMinutes: 75, totalMarks: 50, questionCount: 3 },
 ];
 

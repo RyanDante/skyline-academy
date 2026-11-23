@@ -25,3 +25,6 @@ firebase/.firebaserc
 *.p12
 *.mobileprovision
 .DS_Store
+
+# Browser crash logs
+debug.log

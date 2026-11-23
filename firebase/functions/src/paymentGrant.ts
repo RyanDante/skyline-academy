@@ -21,8 +21,9 @@ export async function grantEntitlementForPayment(reference: string, succeeded: b
     const uid = snap.get('uid') as string;
     const productId = snap.get('productId') as ProductId;
     const subjectId = (snap.get('subjectId') as string | null) ?? undefined;
+    const paperId = (snap.get('paperId') as string | null) ?? undefined;
 
-    await grantProduct(tx, uid, productId, subjectId);
+    await grantProduct(tx, uid, productId, subjectId, paperId);
     tx.update(ref, { status: 'completed', completedAt: FieldValue.serverTimestamp() });
   });
 }

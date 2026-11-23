@@ -17,6 +17,7 @@ export const PRICES = {
   'season-pass': 7500,
   'subject-pass': 2000,
   'exam-week-pass': 1000,
+  'paper-answers': 100,
 } as const;
 
 export type ProductId = keyof typeof PRICES;

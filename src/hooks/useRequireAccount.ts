@@ -6,16 +6,16 @@ import { useSessionStore } from '@/stores/sessionStore';
 export type AccountReason = 'save' | 'quiz' | 'tutor' | 'target' | 'group' | 'pay';
 
 /**
- * Browsing is open to everyone; an account is asked for only at the first action that needs one.
- * Returns true when the student is already signed in; otherwise opens the sign-in flow.
+ * Returns true when the student is signed in; otherwise opens Sign in. Students normally create
+ * an account during onboarding; this covers anyone who signed out.
  */
 export function useRequireAccount() {
   const uid = useSessionStore((s) => s.uid);
 
   return useCallback(
-    (reason: AccountReason): boolean => {
+    (_reason: AccountReason): boolean => {
       if (uid) return true;
-      router.push({ pathname: '/(auth)/phone', params: { reason } });
+      router.push('/(auth)/sign-in');
       return false;
     },
     [uid],

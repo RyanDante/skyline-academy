@@ -19,7 +19,7 @@ import { AiHeader } from '@/components/tutor/AiHeader';
 import { ChatBubble } from '@/components/tutor/ChatBubble';
 import { Badge, Button, Card, Chip, EmptyState, OfflineBanner, Text } from '@/components/ui';
 import { checkNumericAnswer, isCorrect } from '@/domain/quiz';
-import { queryKeys, usePaper, useSolution } from '@/hooks/queries';
+import { queryKeys, usePaper, useQuestion, useSolution } from '@/hooks/queries';
 import { useNetwork } from '@/hooks/useNetwork';
 import { useRequireAccount } from '@/hooks/useRequireAccount';
 import { cn } from '@/lib/cn';
@@ -27,7 +27,7 @@ import { createId } from '@/lib/id';
 import { attemptsService } from '@/services/attempts';
 import { tutorService, type TutorIntent, type TutorMode } from '@/services/tutor';
 import { useGceTutorStore, type ThreadItem } from '@/stores/gceTutorStore';
-import { hasFullAccess, useSessionStore } from '@/stores/sessionStore';
+import { hasPaperAnswers, useSessionStore } from '@/stores/sessionStore';
 import { useThemeColors } from '@/theme/tokens';
 import type { OptionKey, Question } from '@/types/models';
 
@@ -376,6 +376,7 @@ function SourceChip({ question }: { question: Question }) {
 /** Skyline's own worked solution, shown first and labelled (brief 6.3). */
 function InlineSkylineSolution({ questionId, onNoSolution }: { questionId: string; onNoSolution: () => void }) {
   const solution = useSolution(questionId);
+  const question = useQuestion(questionId);
   const entitlement = useSessionStore((s) => s.entitlement);
   const missing = !solution.isLoading && !solution.data;
 
@@ -393,8 +394,12 @@ function InlineSkylineSolution({ questionId, onNoSolution }: { questionId: strin
       <Badge label="Skyline solution" tone="brand" />
       <SolutionView
         solution={s}
-        unlocked={s.tier === 'free' || hasFullAccess(entitlement)}
-        onUnlock={() => router.push('/paywall')}
+        unlocked={s.tier === 'free' || (!!question.data && hasPaperAnswers(entitlement, question.data.paperId, question.data.subjectId))}
+        onUnlock={() =>
+          question.data
+            ? router.push({ pathname: '/unlock/[paperId]', params: { paperId: question.data.paperId } })
+            : router.push('/paywall')
+        }
       />
     </Card>
   );

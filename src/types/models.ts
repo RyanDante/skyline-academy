@@ -279,7 +279,10 @@ export interface LeaderboardEntry {
 
 export interface UserProfile {
   uid: string | null;
+  /** Shown in greetings ("Good morning, Baba T!"). From the sign-up nickname. */
   firstName: string;
+  /** Full name from sign-up. */
+  fullName?: string;
   level: Level;
   form: string;
   stream: Stream;
@@ -295,4 +298,6 @@ export interface Entitlement {
   expiresAt: string | null;
   /** Subject ids unlocked by per-subject passes. */
   subjectPasses: string[];
+  /** Paper ids whose Skyline answers were bought individually (100 XAF each). */
+  unlockedPaperIds?: string[];
 }

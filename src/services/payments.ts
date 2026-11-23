@@ -2,12 +2,14 @@ import { config } from '@/lib/config';
 import { callable } from '@/lib/firebase';
 import type { Entitlement } from '@/types/models';
 
-export type ProductId = 'season-pass' | 'subject-pass' | 'exam-week-pass';
+export type ProductId = 'season-pass' | 'subject-pass' | 'exam-week-pass' | 'paper-answers';
 export type MobileMoneyProvider = 'mtn' | 'orange';
 
 export interface CheckoutRequest {
   productId: ProductId;
   subjectId?: string;
+  /** For 'paper-answers': the paper whose Skyline answers are bought. */
+  paperId?: string;
   provider: MobileMoneyProvider;
   /** E.164 number that receives the payment prompt (may be a parent's). */
   payerPhone: string;
@@ -18,7 +20,8 @@ export interface CheckoutResponse {
   /** Hosted payment page from the aggregator, when the provider uses one. */
   checkoutUrl: string | null;
   /** "pending" means a USSD/push prompt was sent to the payer's phone. */
-  status: 'pending' | 'failed';
+  /** 'paid' is demo-only: the unlock is granted immediately. */
+  status: 'pending' | 'paid' | 'failed';
   message: string;
 }
 
@@ -28,6 +31,10 @@ const redeemAccessCode = callable<{ code: string }, Entitlement>('redeemAccessCo
 export const paymentsService = {
   async checkout(request: CheckoutRequest): Promise<CheckoutResponse> {
     if (config.useMocks) {
+      // Demo: single-paper unlocks succeed instantly so testers can see the unlocked answers.
+      if (request.productId === 'paper-answers') {
+        return { reference: 'demo-ref', checkoutUrl: null, status: 'paid', message: 'Demo mode: answers unlocked without payment.' };
+      }
       return {
         reference: 'demo-ref',
         checkoutUrl: null,
