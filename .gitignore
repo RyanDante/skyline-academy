@@ -28,3 +28,5 @@ firebase/.firebaserc
 
 # Browser crash logs
 debug.log
+play-service-account.json
+*-service-account*.json

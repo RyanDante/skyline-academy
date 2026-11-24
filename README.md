@@ -55,6 +55,8 @@ For a live Firebase APK, use `eas build --platform android --profile production-
 
 ## 2. Connect Firebase
 
+> For the full step-by-step go-live checklist (accounts, Firebase, payments, Play Store), see [docs/GO_LIVE.md](docs/GO_LIVE.md).
+
 1. **Create a Firebase project** and upgrade it to the Blaze plan (Cloud Functions and outbound calls to the Claude API need it).
 2. **Authentication:** enable the *Email/Password* provider. Students sign in with phone number + password; the app maps the number to an internal address (`<digits>@phone.skylineacademy.app`), so no SMS is sent.
 3. **Firestore** (production mode) and **Storage**: create both, in a region close to Cameroon (for example `europe-west1`).
