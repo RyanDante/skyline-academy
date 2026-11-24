@@ -12,6 +12,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Button, Text } from '@/components/ui';
 import { useBootstrap } from '@/hooks/useBootstrap';
+import { syncReminders } from '@/services/reminders';
+import { applyTheme } from '@/services/theme';
+import { useSessionStore } from '@/stores/sessionStore';
 import { useThemeColors } from '@/theme/tokens';
 
 void SplashScreen.preventAutoHideAsync();
@@ -29,6 +32,14 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready || error) void SplashScreen.hideAsync();
   }, [ready, error]);
+
+  // Apply the saved theme and re-schedule study reminders once the store has loaded.
+  useEffect(() => {
+    if (!ready) return;
+    const { settings } = useSessionStore.getState();
+    applyTheme(settings.theme);
+    void syncReminders(settings.reminders).catch(() => undefined);
+  }, [ready]);
 
   if (error) {
     return (
@@ -58,9 +69,12 @@ export default function RootLayout() {
           >
             <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
             <Stack.Screen name="(onboarding)/welcome" options={{ animation: 'fade' }} />
-            <Stack.Screen name="(auth)/phone" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="(auth)/verify" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="(auth)/sign-in" />
+            <Stack.Screen name="(auth)/sign-up" />
             <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="unlock/[paperId]" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="settings" />
+            <Stack.Screen name="notifications" />
             <Stack.Screen name="quiz/session" options={{ gestureEnabled: false }} />
           </Stack>
         </QueryClientProvider>

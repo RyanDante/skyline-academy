@@ -8,7 +8,9 @@ React Native app for Anglophone GCE students in Cameroon: past papers with teach
 
 ## 1. Run it in 5 minutes (demo mode, no Firebase)
 
-Demo mode runs the whole app on bundled sample data. Phone sign-in accepts any Cameroon number with code `123456`, and access code `SKYLINE-DEMO` unlocks the Season Pass.
+Demo mode runs the whole app on bundled sample data. Create an account on the Sign up screen with any Cameroon number and a password of 6+ characters; demo accounts are kept on the phone. Paper answers unlock instantly (no charge), and access code `SKYLINE-DEMO` unlocks the Season Pass.
+
+The screens follow the mockups in `design/mockups/` (splash, onboarding, sign up/in, personalise, Home, GCE, subject papers, Concours, Tutor).
 
 ```bash
 npm install
@@ -54,11 +56,11 @@ For a live Firebase APK, use `eas build --platform android --profile production-
 ## 2. Connect Firebase
 
 1. **Create a Firebase project** and upgrade it to the Blaze plan (Cloud Functions and outbound calls to the Claude API need it).
-2. **Authentication:** enable the *Phone* provider.
+2. **Authentication:** enable the *Email/Password* provider. Students sign in with phone number + password; the app maps the number to an internal address (`<digits>@phone.skylineacademy.app`), so no SMS is sent.
 3. **Firestore** (production mode) and **Storage**: create both, in a region close to Cameroon (for example `europe-west1`).
 4. **Apps:**
-   - Android: package `com.skylineacademy.app`. Add your debug and release **SHA-1 and SHA-256** fingerprints; phone auth fails without them. Download `google-services.json` to the project root.
-   - iOS: bundle id `com.skylineacademy.app`. Download `GoogleService-Info.plist` to the project root, and upload an APNs key so phone auth can verify silently.
+   - Android: package `com.skylineacademy.app`. Download `google-services.json` to the project root.
+   - iOS: bundle id `com.skylineacademy.app`. Download `GoogleService-Info.plist` to the project root.
 5. **Deploy rules, indexes and functions** (Firebase CLI, from `firebase/`):
 
    ```bash
@@ -93,7 +95,10 @@ src/
   app/                    Expo Router screens (file = route)
     (tabs)/               Home · GCE · Concours · Tutor · Me
     (onboarding)/         welcome, 4-step setup
-    (auth)/               phone + OTP (modal; asked only when needed)
+    (auth)/               sign-up, sign-in (phone + password)
+    settings.tsx          theme, daily goal, study reminders, practice options
+    notifications.tsx     in-app notification centre
+    unlock/[paperId]      pay 100 FCFA to unlock one paper's answers
     gce/[subjectId]       subject: papers by year, topics with mastery
     paper/[paperId]       paper: practise, timed attempt, PDF, download, solutions
     pdf/[paperId]         PDF viewer (offline copy first)
@@ -151,8 +156,8 @@ A failed call refunds the student's question.
 ## 5. Design system
 
 - **Colours** are defined once in `global.css` as CSS variables, with light and dark values. Tailwind classes (`bg-surface`, `text-ink`, `bg-accent`, `text-brand-deep`, …) adapt automatically.
-- **Brand:** orange `#FF820A`, teal `#0E989A`, light cyan `#B0E5EB`. The brand orange and teal are too light for small text on white, so text uses `accent-deep` (`#B35400`) and `brand-deep` (`#0A7375`).
-- **Type:** Sora for display, Inter for body text, with the scale in `tailwind.config.js`. Text scaling is capped at 1.3× to protect layouts.
+- **Brand (from the mockups):** teal `#00B8B0`, orange `#FF8A00`, ink `#173A43`, tint `#D7F4F2`. Both brand colours are too light for small text on white, so text and filled buttons use `brand-deep` (`#087F7A`) and `accent-deep` (`#C26400`). Skyler's accent is orange.
+- **Type:** Poppins for display, Inter for body text, with the scale in `tailwind.config.js`. Text scaling is capped at 1.3× to protect layouts.
 - **One primary (orange) button per screen.** Other buttons use the `brand`, `secondary` or `ghost` variants.
 - **Signature elements:** the skyline silhouette with an orange horizon line (Home, splash), and the orange marking-pen line with `✓ M1 …` annotations on solutions.
 - **Placeholder art:** icons and splash images in `assets/images` are generated placeholders. Replace them when the refreshed logo is ready.
@@ -163,7 +168,7 @@ A failed call refunds the student's question.
 |---|---|---|
 | Mobile Money | `createCheckout` and `paymentWebhook` are complete except the provider call (`requestCollection` in `payments.ts`) | Choose an aggregator that covers MTN MoMo and Orange Money. Implement `requestCollection` and adapt the webhook's signature header and payload. |
 | Admin / CMS | Not included | A small web admin (or Firebase console to start) for papers, questions, solutions, Concours data, highlights, access codes and leads. |
-| Push notifications | Not included | Add `@react-native-firebase/messaging`, store FCM tokens, and send deadline and mock reminders from a scheduled function. |
+| Push notifications | Local study reminders (`expo-notifications`) and an in-app notification list are built; no server push | Add `@react-native-firebase/messaging`, store FCM tokens, and send deadline and mock reminders from a scheduled function. |
 | Paid-step enforcement | Paid solution steps are hidden in the app only | Move paid steps to a subcollection readable only with an active entitlement. |
 | App Check | Off | Enable Firebase App Check (Play Integrity / App Attest) and set `enforceAppCheck: true` on callable functions, especially `tutorAsk`. |
 | Real content | `src/data/seed.ts` is sample data | Load real papers, solutions, topic weights and verified dates. Concours requirements in the seed are marked "to confirm". |
@@ -172,6 +177,6 @@ A failed call refunds the student's question.
 
 ## 7. Assumptions to confirm
 
-- Prices (Season Pass 7 500 CFA, subject 2 000, exam week 1 000) are hypotheses to test. They are set in `src/lib/config.ts` and `firebase/functions/src/config.ts`.
+- Prices (Season Pass 7 500 CFA, subject 2 000, exam week 1 000, one paper's answers 100) are hypotheses to test. They are set in `src/lib/config.ts` and `firebase/functions/src/config.ts`.
 - `EXPO_PUBLIC_GCE_EXAM_START` defaults to 2027-05-10; set it from the GCE Board timetable.
 - Concours topic weights, requirements and dates in the seed are illustrative and show "Not yet verified" until `lastVerified` is set.

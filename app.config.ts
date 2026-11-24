@@ -41,7 +41,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: hasAndroidFirebase ? androidGoogleServices : undefined,
     adaptiveIcon: {
       foregroundImage: './assets/images/adaptive-icon.png',
-      backgroundColor: '#0A7375',
+      backgroundColor: '#00B8B0',
     },
     permissions: ['CAMERA'],
   },
@@ -50,9 +50,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-sqlite',
     'expo-font',
     'expo-sharing',
+    ['expo-notifications', { color: '#00B8B0' }],
     [
       'expo-splash-screen',
-      { image: './assets/images/splash.png', backgroundColor: '#0A7375', imageWidth: 180 },
+      { image: './assets/images/splash.png', backgroundColor: '#00B8B0', imageWidth: 180 },
     ],
     [
       'expo-image-picker',

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 
 import { ShareableCard, type ShareableCardHandle } from '@/components/share/ShareableCard';
@@ -13,6 +13,9 @@ import { useQuizStore } from '@/stores/quizStore';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useThemeColors } from '@/theme/tokens';
 
+/** Quiz runs already saved to history (keyed by start time), so remounts don't duplicate them. */
+const recorded = new Set<number>();
+
 export default function QuizResults() {
   const { questions, answers, startedAt, finishedAt, title, reset } = useQuizStore();
   const firstName = useSessionStore((s) => s.profile?.firstName ?? 'I');
@@ -21,6 +24,19 @@ export default function QuizResults() {
 
   const score = useMemo(() => scoreQuiz(questions, answers), [questions, answers]);
   const duration = startedAt && finishedAt ? finishedAt - startedAt : 0;
+  const addQuizRecord = useSessionStore((s) => s.addQuizRecord);
+
+  useEffect(() => {
+    if (!startedAt || score.total === 0 || recorded.has(startedAt)) return;
+    recorded.add(startedAt);
+    addQuizRecord({
+      title,
+      subjectId: questions[0]?.subjectId ?? '',
+      correct: score.correct,
+      total: score.total,
+      questionIds: questions.map((q) => q.id),
+    });
+  }, [startedAt, score, title, questions, addQuizRecord]);
   const message =
     score.ratio >= 0.8 ? 'Excellent work.' : score.ratio >= 0.5 ? 'Good progress. Review the ones you missed.' : 'Keep going. Every wrong answer shows you what to fix.';
 

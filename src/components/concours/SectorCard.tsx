@@ -1,13 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { pluralize } from '@/lib/format';
-import { useThemeColors } from '@/theme/tokens';
+import { sectorColors } from '@/theme/tokens';
 import type { ConcoursSector } from '@/types/models';
 
-import { Badge } from '../ui/Badge';
-import { Card } from '../ui/Card';
 import { DifficultyDots } from '../ui/DifficultyDots';
 import { Text } from '../ui/Text';
 
@@ -18,30 +16,37 @@ export function countSchools(sector: ConcoursSector): number {
   return new Set(sector.fields.flatMap((f) => f.schools)).size;
 }
 
+/** Coloured sector card (Concours mockup 9): icon circle, name, example fields. */
 export function SectorCard({ sector, onPress }: { sector: ConcoursSector; onPress: () => void }) {
-  const colors = useThemeColors();
-  // Same chip on every card (design brief, section 2): "N fields · N schools".
+  const color = sectorColors[sector.id] ?? sectorColors.health!;
+  const examples = sector.fields
+    .slice(0, 2)
+    .map((f) => f.name.split(/[,:(]/)[0]!.trim())
+    .join(', ');
   const counts = `${pluralize(sector.fields.length, 'field')} · ${pluralize(countSchools(sector), 'school')}`;
 
   return (
-    <Card
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`${sector.name}: ${examples}. ${counts}`}
       onPress={onPress}
-      accessibilityLabel={`${sector.name}: ${sector.blurb}. ${counts}`}
-      className="flex-row gap-3"
+      className="flex-row items-center gap-4 rounded-card border p-4 active:opacity-80"
+      style={{ backgroundColor: color.bg, borderColor: color.border }}
     >
-      <View className="h-14 w-14 items-center justify-center rounded-control bg-brand-soft">
-        <Ionicons name={sector.icon as IconName} size={24} color={colors.brandDeep} />
+      <View className="h-16 w-16 items-center justify-center rounded-full bg-white/80">
+        <Ionicons name={sector.icon.replace('-outline', '') as IconName} size={30} color={color.fg} />
       </View>
-      <View className="flex-1 gap-1.5">
-        <Text variant="h3">{sector.name}</Text>
-        <Text variant="body" className="text-muted">
-          {sector.blurb}
+      <View className="flex-1 gap-1">
+        <Text variant="h3" className="text-[#173A43]">{sector.name}</Text>
+        <Text variant="small" className="text-[#55737B]" numberOfLines={1}>
+          {examples}…
         </Text>
-        <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1.5">
-          <Badge label={counts} tone="neutral" />
+        <View className="flex-row flex-wrap items-center gap-x-3 gap-y-1">
+          <Text variant="caption" className="text-[#55737B]">{counts}</Text>
           <DifficultyDots level={sector.difficulty} />
         </View>
       </View>
-    </Card>
+      <Ionicons name="chevron-forward" size={20} color={color.fg} />
+    </Pressable>
   );
 }

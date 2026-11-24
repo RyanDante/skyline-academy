@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 
 import { AiHeader } from '@/components/tutor/AiHeader';
@@ -17,6 +17,9 @@ interface TopicResult {
   marked: number;
   strong: boolean;
 }
+
+/** Sessions already saved to quiz history (keyed by start time). */
+const recorded = new Set<number>();
 
 /** Session summary (design brief 6.4). */
 export default function GceTutorSummary() {
@@ -55,6 +58,19 @@ export default function GceTutorSummary() {
     results.sort((a, b) => Number(a.strong) - Number(b.strong));
     return { correct: c, marked: m, topicResults: results };
   }, [session, topics.data]);
+
+  const addQuizRecord = useSessionStore((s) => s.addQuizRecord);
+  useEffect(() => {
+    if (!session || marked === 0 || recorded.has(session.startedAt)) return;
+    recorded.add(session.startedAt);
+    addQuizRecord({
+      title: session.title,
+      subjectId: session.subjectId,
+      correct,
+      total: marked,
+      questionIds: session.questions.map((q) => q.id),
+    });
+  }, [session, correct, marked, addQuizRecord]);
 
   if (!session) {
     return (

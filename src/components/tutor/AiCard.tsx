@@ -10,37 +10,29 @@ import { AiAvatar, type AiPersona } from './AiAvatar';
 interface AiCardProps {
   persona: AiPersona;
   title: string;
-  subtitle?: string;
   description: string;
   chip?: string;
   actionLabel: string;
   onPress: () => void;
 }
 
-/** Full-width hub card for one AI guide, in that guide's accent colour (brief 3.2). */
-export function AiCard({ persona, title, subtitle, description, chip, actionLabel, onPress }: AiCardProps) {
+/** Hub card for one AI guide (Tutor mockup 10): big avatar left, text and button right. */
+export function AiCard({ persona, title, description, chip, actionLabel, onPress }: AiCardProps) {
   const skyler = persona === 'skyler';
   return (
     <View
       className={cn(
-        'gap-4 rounded-card border p-4',
-        skyler ? 'border-skyler/25 bg-skyler-soft' : 'border-line bg-surface',
+        'flex-row items-center gap-4 rounded-card border p-4',
+        skyler ? 'border-accent/30 bg-skyler-soft' : 'border-brand/30 bg-brand-soft/60',
       )}
     >
-      <View className="flex-row items-center gap-4">
-        <AiAvatar persona={persona} />
-        <View className="flex-1 gap-0.5">
-          <Text variant="heading">{title}</Text>
-          {subtitle ? (
-            <Text variant="label" className={skyler ? 'text-skyler' : 'text-brand-deep'}>
-              {subtitle}
-            </Text>
-          ) : null}
-        </View>
+      <AiAvatar persona={persona} size={88} />
+      <View className="flex-1 gap-2">
+        <Text variant="heading">{title}</Text>
+        <Text variant="body" className="text-muted">{description}</Text>
+        {chip ? <Badge label={chip} tone={skyler ? 'accent' : 'brand'} /> : null}
+        <Button label={actionLabel} variant={skyler ? 'skyler' : 'primary'} onPress={onPress} />
       </View>
-      <Text variant="body">{description}</Text>
-      {chip ? <Badge label={chip} tone="neutral" /> : null}
-      <Button label={actionLabel} variant={skyler ? 'skyler' : 'primary'} onPress={onPress} />
     </View>
   );
 }

@@ -28,6 +28,10 @@ function dailyIndex(n: number): number {
  * "Today's Challenge" (mockup 6): one real past-paper MCQ a day from the student's main
  * subject, answered right on Home.
  */
+
+/** Read the clock outside render (used only from the answer handler). */
+const timestamp = () => Date.now();
+
 export function DailyChallengeCard({ subjectId }: { subjectId: string | undefined }) {
   const colors = useThemeColors();
   const queryClient = useQueryClient();
@@ -64,7 +68,7 @@ export function DailyChallengeCard({ subjectId }: { subjectId: string | undefine
         correct: isCorrect(question, key),
         timeMs: 0,
         source: 'quiz',
-        createdAt: Date.now(),
+        createdAt: timestamp(),
       },
     ]);
     await queryClient.invalidateQueries({ queryKey: queryKeys.attempts });

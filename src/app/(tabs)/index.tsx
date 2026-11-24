@@ -120,12 +120,13 @@ export default function Home() {
 
   const keyDates: KeyDate[] = [
     ...GCE_KEY_DATES,
-    ...targetInstitutions.flatMap((i) =>
-      [
-        i.applicationDeadline && { id: `${i.id}-d`, title: `${i.shortName} application deadline`, date: i.applicationDeadline, kind: 'concours' as const },
-        i.examDate && { id: `${i.id}-e`, title: `${i.shortName} exam`, date: i.examDate, kind: 'concours' as const },
-      ].filter((x): x is KeyDate => !!x),
-    ),
+    ...targetInstitutions.flatMap((i) => {
+      const dates: KeyDate[] = [];
+      if (i.applicationDeadline)
+        dates.push({ id: `${i.id}-d`, title: `${i.shortName} application deadline`, date: i.applicationDeadline, kind: 'concours' });
+      if (i.examDate) dates.push({ id: `${i.id}-e`, title: `${i.shortName} exam`, date: i.examDate, kind: 'concours' });
+      return dates;
+    }),
   ];
 
   return (
